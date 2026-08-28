@@ -1,0 +1,781 @@
+/**
+ * AI Auto-Fixer: Modern SaaS Admin Dashboard Stylesheet
+ */
+
+:root {
+	--aaf-primary: #6366f1;
+	--aaf-primary-hover: #4f46e5;
+	--aaf-accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+	--aaf-bg-card: #ffffff;
+	--aaf-border: #e2e8f0;
+	--aaf-border-subtle: #f1f5f9;
+	--aaf-text-main: #0f172a;
+	--aaf-text-muted: #64748b;
+	--aaf-critical: #ef4444;
+	--aaf-critical-bg: #fef2f2;
+	--aaf-warning: #f59e0b;
+	--aaf-warning-bg: #fffbeb;
+	--aaf-success: #10b981;
+	--aaf-success-bg: #ecfdf5;
+	--aaf-info: #3b82f6;
+	--aaf-info-bg: #eff6ff;
+	--aaf-radius-sm: 6px;
+	--aaf-radius-md: 10px;
+	--aaf-radius-lg: 16px;
+	--aaf-shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+	--aaf-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+	--aaf-shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+}
+
+.ai-auto-fixer-admin-wrap {
+	max-width: 1240px;
+	margin: 20px 20px 40px 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	color: var(--aaf-text-main);
+}
+
+/* Header */
+.aaf-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: var(--aaf-bg-card);
+	padding: 24px 28px;
+	border-radius: var(--aaf-radius-lg);
+	border: 1px solid var(--aaf-border);
+	box-shadow: var(--aaf-shadow-sm);
+	margin-bottom: 24px;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.aaf-brand-group {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.aaf-brand-icon {
+	width: 52px;
+	height: 52px;
+	background: var(--aaf-accent-gradient);
+	border-radius: var(--aaf-radius-md);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffffff;
+	box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.aaf-title {
+	font-size: 22px;
+	font-weight: 700;
+	margin: 0 0 4px 0;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: var(--aaf-text-main);
+}
+
+.aaf-version-badge {
+	font-size: 11px;
+	background: #f1f5f9;
+	color: var(--aaf-text-muted);
+	padding: 2px 8px;
+	border-radius: 999px;
+	font-weight: 600;
+}
+
+.aaf-subtitle {
+	margin: 0;
+	font-size: 13px;
+	color: var(--aaf-text-muted);
+}
+
+.aaf-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+/* License Pill */
+.aaf-license-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.aaf-license-free {
+	background: #f1f5f9;
+	color: var(--aaf-text-muted);
+}
+.aaf-license-free .aaf-pill-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #94a3b8;
+}
+
+.aaf-license-pro {
+	background: #ecfdf5;
+	color: #059669;
+}
+.aaf-license-pro .aaf-pill-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #10b981;
+	box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+/* Buttons */
+.aaf-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 18px;
+	border-radius: var(--aaf-radius-md);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	border: 1px solid transparent;
+	transition: all 0.2s ease;
+	text-decoration: none;
+}
+
+.aaf-btn:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+.aaf-btn-primary {
+	background: var(--aaf-primary);
+	color: #ffffff;
+}
+.aaf-btn-primary:hover {
+	background: var(--aaf-primary-hover);
+	color: #ffffff;
+}
+
+.aaf-btn-secondary {
+	background: #ffffff;
+	border-color: var(--aaf-border);
+	color: var(--aaf-text-main);
+}
+.aaf-btn-secondary:hover {
+	background: #f8fafc;
+	border-color: #cbd5e1;
+}
+
+.aaf-btn-gradient {
+	background: var(--aaf-accent-gradient);
+	color: #ffffff;
+	box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
+}
+.aaf-btn-gradient:hover {
+	opacity: 0.95;
+	color: #ffffff;
+	transform: translateY(-1px);
+}
+
+.aaf-btn-pro-locked {
+	background: #f8fafc;
+	border-color: #e2e8f0;
+	color: var(--aaf-text-muted);
+}
+.aaf-btn-pro-locked:hover {
+	border-color: #a855f7;
+	color: #a855f7;
+}
+
+.aaf-pill-pro-small {
+	font-size: 9px;
+	font-weight: 700;
+	background: var(--aaf-accent-gradient);
+	color: #ffffff;
+	padding: 1px 5px;
+	border-radius: 4px;
+	margin-left: 4px;
+}
+
+.aaf-spin-icon.is-spinning {
+	animation: aaf-spin 1s infinite linear;
+}
+@keyframes aaf-spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+/* Metrics Grid */
+.aaf-metrics-grid {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 1fr;
+	gap: 18px;
+	margin-bottom: 24px;
+}
+
+@media (max-width: 960px) {
+	.aaf-metrics-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 600px) {
+	.aaf-metrics-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+.aaf-card {
+	background: var(--aaf-bg-card);
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-lg);
+	padding: 22px;
+	box-shadow: var(--aaf-shadow-sm);
+}
+
+/* Score Card */
+.aaf-score-card {
+	background: linear-gradient(to right, #ffffff, #faf5ff);
+}
+.aaf-score-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+.aaf-score-circle {
+	width: 76px;
+	height: 76px;
+	flex-shrink: 0;
+}
+.aaf-circular-chart {
+	display: block;
+	max-width: 100%;
+	max-height: 100%;
+}
+.aaf-circle-bg {
+	fill: none;
+	stroke: #e2e8f0;
+	stroke-width: 3.2;
+}
+.aaf-circle {
+	fill: none;
+	stroke-width: 3.2;
+	stroke-linecap: round;
+	stroke: #10b981;
+	transition: stroke-dasharray 0.6s ease;
+}
+.aaf-score-text {
+	fill: var(--aaf-text-main);
+	font-family: inherit;
+	font-size: 9px;
+	font-weight: 700;
+	text-anchor: middle;
+}
+.aaf-score-details h3 {
+	margin: 0 0 6px 0;
+	font-size: 16px;
+	font-weight: 700;
+}
+.aaf-meta-text {
+	margin: 0;
+	font-size: 12px;
+	color: var(--aaf-text-muted);
+}
+
+/* Stat Cards */
+.aaf-stat-card {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+.aaf-stat-icon {
+	width: 48px;
+	height: 48px;
+	border-radius: var(--aaf-radius-md);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.aaf-stat-critical .aaf-stat-icon {
+	background: var(--aaf-critical-bg);
+	color: var(--aaf-critical);
+}
+.aaf-stat-warning .aaf-stat-icon {
+	background: var(--aaf-warning-bg);
+	color: var(--aaf-warning);
+}
+.aaf-stat-passed .aaf-stat-icon {
+	background: var(--aaf-success-bg);
+	color: var(--aaf-success);
+}
+.aaf-stat-number {
+	display: block;
+	font-size: 24px;
+	font-weight: 700;
+	line-height: 1.1;
+}
+.aaf-stat-label {
+	font-size: 12px;
+	color: var(--aaf-text-muted);
+	font-weight: 500;
+}
+
+/* Freemium Upgrade Banner */
+.aaf-upgrade-banner {
+	background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
+	border-radius: var(--aaf-radius-lg);
+	padding: 28px 32px;
+	color: #ffffff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 24px;
+	gap: 20px;
+	flex-wrap: wrap;
+	box-shadow: 0 10px 25px rgba(30, 27, 75, 0.2);
+}
+.aaf-banner-badge {
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	background: rgba(255,255,255,0.15);
+	display: inline-block;
+	padding: 3px 8px;
+	border-radius: 4px;
+	margin-bottom: 8px;
+}
+.aaf-banner-content h2 {
+	margin: 0 0 6px 0;
+	font-size: 18px;
+	color: #ffffff;
+	font-weight: 700;
+}
+.aaf-banner-content p {
+	margin: 0;
+	font-size: 13px;
+	color: #cbd5e1;
+	max-width: 680px;
+}
+
+/* Tabs Navigation */
+.aaf-tabs-nav {
+	display: flex;
+	gap: 8px;
+	border-bottom: 1px solid var(--aaf-border);
+	margin-bottom: 24px;
+	overflow-x: auto;
+}
+.aaf-tab-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 18px;
+	color: var(--aaf-text-muted);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+	border-bottom: 2px solid transparent;
+	transition: all 0.2s ease;
+}
+.aaf-tab-link:hover {
+	color: var(--aaf-primary);
+}
+.aaf-tab-link.active {
+	color: var(--aaf-primary);
+	border-bottom-color: var(--aaf-primary);
+}
+.aaf-tab-count {
+	font-size: 11px;
+	background: #f1f5f9;
+	color: var(--aaf-text-muted);
+	padding: 2px 7px;
+	border-radius: 999px;
+}
+.aaf-tab-content {
+	display: none;
+}
+.aaf-tab-content.active {
+	display: block;
+}
+
+/* Filter Bar */
+.aaf-filter-bar {
+	margin-bottom: 18px;
+}
+.aaf-filter-buttons {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.aaf-filter-btn {
+	background: #ffffff;
+	border: 1px solid var(--aaf-border);
+	padding: 6px 14px;
+	border-radius: var(--aaf-radius-md);
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	color: var(--aaf-text-muted);
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+.aaf-filter-btn.active {
+	background: var(--aaf-text-main);
+	color: #ffffff;
+	border-color: var(--aaf-text-main);
+}
+.aaf-filter-btn.active .aaf-badge {
+	background: rgba(255,255,255,0.2);
+	color: #ffffff;
+}
+
+.aaf-badge {
+	font-size: 11px;
+	padding: 2px 6px;
+	border-radius: 999px;
+	background: #f1f5f9;
+}
+.aaf-badge-critical { background: var(--aaf-critical-bg); color: var(--aaf-critical); }
+.aaf-badge-warning { background: var(--aaf-warning-bg); color: var(--aaf-warning); }
+.aaf-badge-passed { background: var(--aaf-success-bg); color: var(--aaf-success); }
+
+/* Issue Cards */
+.aaf-issues-list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+.aaf-issue-card {
+	border-left: 4px solid var(--aaf-border);
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.aaf-issue-card:hover {
+	box-shadow: var(--aaf-shadow-md);
+}
+.aaf-issue-critical { border-left-color: var(--aaf-critical); }
+.aaf-issue-warning { border-left-color: var(--aaf-warning); }
+.aaf-issue-info { border-left-color: var(--aaf-info); }
+
+.aaf-issue-header {
+	margin-bottom: 12px;
+}
+.aaf-issue-badges {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+.aaf-severity-badge {
+	font-size: 10px;
+	font-weight: 700;
+	padding: 2px 6px;
+	border-radius: 4px;
+}
+.aaf-severity-critical { background: var(--aaf-critical-bg); color: var(--aaf-critical); }
+.aaf-severity-warning { background: var(--aaf-warning-bg); color: var(--aaf-warning); }
+.aaf-severity-info { background: var(--aaf-info-bg); color: var(--aaf-info); }
+
+.aaf-category-badge {
+	font-size: 11px;
+	background: #f8fafc;
+	color: var(--aaf-text-muted);
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-weight: 500;
+}
+.aaf-issue-title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 700;
+}
+.aaf-issue-desc {
+	margin: 0 0 12px 0;
+	font-size: 13px;
+	color: #334155;
+	line-height: 1.5;
+}
+.aaf-manual-fix-box {
+	background: #f8fafc;
+	border: 1px dashed var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+	padding: 10px 14px;
+	font-size: 12px;
+	color: var(--aaf-text-muted);
+	margin-bottom: 16px;
+}
+.aaf-manual-fix-box strong {
+	color: var(--aaf-text-main);
+	margin-right: 6px;
+}
+.aaf-issue-footer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+.aaf-manual-only-tag {
+	font-size: 12px;
+	color: var(--aaf-text-muted);
+	font-style: italic;
+}
+
+/* Passed Checks */
+.aaf-passed-checks-wrapper {
+	margin-top: 24px;
+	background: var(--aaf-bg-card);
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-lg);
+	padding: 20px;
+}
+.aaf-section-subtitle {
+	margin: 0 0 16px 0;
+	font-size: 14px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: var(--aaf-success);
+}
+.aaf-passed-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 12px;
+}
+.aaf-passed-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	color: var(--aaf-text-muted);
+}
+.aaf-passed-item .dashicons {
+	color: var(--aaf-success);
+}
+
+/* Recommendations Tab */
+.aaf-rec-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+	gap: 18px;
+}
+.aaf-rec-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.aaf-rec-badge {
+	font-size: 10px;
+	font-weight: 700;
+	background: #ede9fe;
+	color: #6d28d9;
+	display: inline-block;
+	padding: 3px 8px;
+	border-radius: 4px;
+	align-self: flex-start;
+	margin-bottom: 12px;
+}
+.aaf-rec-title {
+	margin: 0 0 8px 0;
+	font-size: 16px;
+	font-weight: 700;
+}
+.aaf-rec-desc {
+	margin: 0 0 16px 0;
+	font-size: 13px;
+	color: #475569;
+	line-height: 1.5;
+}
+
+/* History Table */
+.aaf-history-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+.aaf-history-table th, .aaf-history-table td {
+	padding: 12px 16px;
+	text-align: left;
+	border-bottom: 1px solid var(--aaf-border);
+	font-size: 13px;
+}
+.aaf-history-table th {
+	background: #f8fafc;
+	font-weight: 600;
+}
+
+/* Settings Form */
+.aaf-form-group {
+	margin-bottom: 20px;
+}
+.aaf-form-group label {
+	display: block;
+	margin-bottom: 8px;
+}
+.aaf-input-action-row {
+	display: flex;
+	gap: 10px;
+	max-width: 600px;
+}
+.aaf-input {
+	flex: 1;
+	padding: 8px 12px;
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+	font-family: monospace;
+	font-size: 13px;
+}
+.aaf-license-status-box {
+	background: #f8fafc;
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+	padding: 16px;
+	max-width: 500px;
+	margin-top: 20px;
+}
+.aaf-status-row {
+	display: flex;
+	justify-content: space-between;
+	padding: 6px 0;
+	font-size: 13px;
+}
+.text-success { color: var(--aaf-success); }
+.text-muted { color: var(--aaf-text-muted); }
+
+/* Modal Dialog */
+.aaf-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(15, 23, 42, 0.65);
+	backdrop-filter: blur(6px);
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+.aaf-modal-dialog {
+	background: #ffffff;
+	border-radius: var(--aaf-radius-lg);
+	max-width: 560px;
+	width: 100%;
+	box-shadow: var(--aaf-shadow-lg);
+	position: relative;
+	overflow: hidden;
+}
+.aaf-modal-close {
+	position: absolute;
+	top: 16px;
+	right: 18px;
+	background: none;
+	border: none;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+	color: #94a3b8;
+}
+.aaf-modal-close:hover { color: var(--aaf-text-main); }
+
+.aaf-modal-header {
+	padding: 32px 32px 20px 32px;
+	text-align: center;
+	background: linear-gradient(to bottom, #faf5ff, #ffffff);
+}
+.aaf-modal-icon-badge {
+	width: 56px;
+	height: 56px;
+	margin: 0 auto 16px auto;
+	background: var(--aaf-accent-gradient);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffffff;
+	box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
+}
+.aaf-modal-icon-badge .dashicons {
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+}
+.aaf-modal-header h2 {
+	margin: 0 0 8px 0;
+	font-size: 20px;
+	font-weight: 700;
+}
+.aaf-modal-header p {
+	margin: 0;
+	font-size: 13px;
+	color: var(--aaf-text-muted);
+}
+.aaf-modal-body {
+	padding: 20px 32px 24px 32px;
+}
+.aaf-pro-feature-list {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin-bottom: 24px;
+}
+.aaf-pro-feature-item {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+}
+.aaf-pro-feature-item .dashicons {
+	font-size: 20px;
+	margin-top: 2px;
+}
+.aaf-pro-feature-item strong {
+	display: block;
+	font-size: 13px;
+	margin-bottom: 2px;
+}
+.aaf-pro-feature-item p {
+	margin: 0;
+	font-size: 12px;
+	color: var(--aaf-text-muted);
+}
+.aaf-modal-key-box {
+	background: #f8fafc;
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+	padding: 16px;
+}
+.aaf-modal-key-box h4 {
+	margin: 0 0 10px 0;
+	font-size: 13px;
+}
+.aaf-modal-footer {
+	padding: 0 32px 32px 32px;
+}
+.aaf-btn-block {
+	width: 100%;
+	justify-content: center;
+	padding: 12px;
+	font-size: 14px;
+}
+.aaf-feedback-message {
+	font-size: 12px;
+	margin-top: 8px;
+	padding: 6px 10px;
+	border-radius: 4px;
+	display: none;
+}
+.aaf-feedback-message.is-error {
+	display: block;
+	background: var(--aaf-critical-bg);
+	color: var(--aaf-critical);
+}
+.aaf-feedback-message.is-success {
+	display: block;
+	background: var(--aaf-success-bg);
+	color: var(--aaf-success);
+}
