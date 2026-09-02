@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API Controller.
+ * REST API Controller (100% Free & Standalone).
  *
  * @package AiAutoFixer\Api
  */
@@ -18,11 +18,10 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
 use AiAutoFixer\Services\SiteAuditScanner;
-use AiAutoFixer\Services\SaasApiBridge;
 use AiAutoFixer\Services\AutoFixService;
 
 /**
- * Handles all REST API routes for asynchronous dashboard actions.
+ * Handles all REST API routes for asynchronous dashboard actions and 1-click auto-fixes.
  */
 class RestController extends WP_REST_Controller {
 
@@ -41,13 +40,6 @@ class RestController extends WP_REST_Controller {
 	private SiteAuditScanner $scanner;
 
 	/**
-	 * SaaS API Bridge.
-	 *
-	 * @var SaasApiBridge
-	 */
-	private SaasApiBridge $api_bridge;
-
-	/**
 	 * Auto-Fix Service.
 	 *
 	 * @var AutoFixService
@@ -58,12 +50,10 @@ class RestController extends WP_REST_Controller {
 	 * Constructor.
 	 *
 	 * @param SiteAuditScanner $scanner Injected Scanner.
-	 * @param SaasApiBridge    $api_bridge Injected API Bridge.
 	 * @param AutoFixService   $auto_fixer Injected Auto-Fixer.
 	 */
-	public function __construct( SiteAuditScanner $scanner, SaasApiBridge $api_bridge, AutoFixService $auto_fixer ) {
+	public function __construct( SiteAuditScanner $scanner, AutoFixService $auto_fixer ) {
 		$this->scanner    = $scanner;
-		$this->api_bridge = $api_bridge;
 		$this->auto_fixer = $auto_fixer;
 	}
 
@@ -95,25 +85,7 @@ class RestController extends WP_REST_Controller {
 			)
 		);
 
-		// POST /wp-json/ai-auto-fixer/v1/license/verify - Verify and save API key.
-		register_rest_route(
-			$this->namespace,
-			'/license/verify',
-			array(
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array( $this, 'handle_verify_license' ),
-				'permission_callback' => array( $this, 'permissions_check' ),
-				'args'                => array(
-					'api_key' => array(
-						'required'          => true,
-						'type'              => 'string',
-						'sanitize_callback' => 'sanitize_text_field',
-					),
-				),
-			)
-		);
-
-		// POST /wp-json/ai-auto-fixer/v1/autofix - Execute auto-fix (Gated by Pro license).
+		// POST /wp-json/ai-auto-fixer/v1/autofix - Execute individual auto-fix.
 		register_rest_route(
 			$this->namespace,
 			'/autofix',
@@ -135,7 +107,18 @@ class RestController extends WP_REST_Controller {
 			)
 		);
 
-		// GET /wp-json/ai-auto-fixer/v1/recommendations - Fetch SaaS AI GEO/AEO recommendations.
+		// POST /wp-json/ai-auto-fixer/v1/autofix/all - Execute all auto-fixes in 1 click.
+		register_rest_route(
+			$this->namespace,
+			'/autofix/all',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'handle_execute_all_autofix' ),
+				'permission_callback' => array( $this, 'permissions_check' ),
+			)
+		);
+
+		// GET /wp-json/ai-auto-fixer/v1/recommendations - Fetch local AI GEO/AEO recommendations.
 		register_rest_route(
 			$this->namespace,
 			'/recommendations',
@@ -202,46 +185,6 @@ class RestController extends WP_REST_Controller {
 	}
 
 	/**
-	 * Verify API key against Next.js SaaS backend and save it if valid.
-	 *
-	 * @param WP_REST_Request $request REST request.
-	 * @return WP_REST_Response
-	 */
-	public function handle_verify_license( WP_REST_Request $request ): WP_REST_Response {
-		$api_key = sanitize_text_field( $request->get_param( 'api_key' ) );
-
-		if ( empty( $api_key ) ) {
-			return rest_ensure_response(
-				array(
-					'success' => false,
-					'message' => __( 'Please provide an API key.', 'ai-auto-fixer' ),
-				)
-			);
-		}
-
-		$verification = $this->api_bridge->verify_license( $api_key, true );
-
-		if ( ! empty( $verification['is_active'] ) ) {
-			$this->api_bridge->save_api_key( $api_key );
-			return rest_ensure_response(
-				array(
-					'success' => true,
-					'license' => $verification,
-					'message' => __( 'API Key validated and Pro subscription active!', 'ai-auto-fixer' ),
-				)
-			);
-		}
-
-		return rest_ensure_response(
-			array(
-				'success' => false,
-				'license' => $verification,
-				'message' => $verification['message'] ?? __( 'Invalid API key or expired license.', 'ai-auto-fixer' ),
-			)
-		);
-	}
-
-	/**
 	 * Execute an automated fix for a specific audited issue.
 	 *
 	 * @param WP_REST_Request $request REST request.
@@ -255,22 +198,39 @@ class RestController extends WP_REST_Controller {
 
 		// If fix was successful, refresh audit results.
 		if ( ! empty( $result['success'] ) ) {
-			$updated_audit    = $this->scanner->run_audit( false );
-			$result['audit']  = $updated_audit;
+			$updated_audit   = $this->scanner->run_audit( false );
+			$result['audit'] = $updated_audit;
 		}
 
 		return rest_ensure_response( $result );
 	}
 
 	/**
-	 * Fetch AI recommendations.
+	 * Execute all automated fixes in 1 click.
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 * @return WP_REST_Response
+	 */
+	public function handle_execute_all_autofix( WP_REST_Request $request ): WP_REST_Response {
+		$result = $this->auto_fixer->execute_all_fixes();
+
+		if ( ! empty( $result['success'] ) ) {
+			$updated_audit   = $this->scanner->run_audit( false );
+			$result['audit'] = $updated_audit;
+		}
+
+		return rest_ensure_response( $result );
+	}
+
+	/**
+	 * Fetch intelligent built-in AI recommendations.
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 * @return WP_REST_Response
 	 */
 	public function handle_get_recommendations( WP_REST_Request $request ): WP_REST_Response {
 		$audit_results   = $this->scanner->get_last_audit_results();
-		$recommendations = $this->api_bridge->fetch_ai_recommendations( (array) $audit_results );
+		$recommendations = $this->scanner->get_local_recommendations( (array) $audit_results );
 
 		return rest_ensure_response(
 			array(

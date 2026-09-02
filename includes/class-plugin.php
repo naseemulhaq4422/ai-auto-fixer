@@ -1,6 +1,6 @@
 <?php
 /**
- * Main Plugin Orchestrator class.
+ * Main Plugin Orchestrator class (100% Free & Standalone).
  *
  * @package AiAutoFixer
  */
@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 use AiAutoFixer\Admin\AdminMenu;
 use AiAutoFixer\Admin\AdminDashboard;
 use AiAutoFixer\Services\SiteAuditScanner;
-use AiAutoFixer\Services\SaasApiBridge;
 use AiAutoFixer\Services\AutoFixService;
 use AiAutoFixer\Api\RestController;
 
@@ -51,13 +50,6 @@ final class Plugin {
 	 * @var SiteAuditScanner|null
 	 */
 	public ?SiteAuditScanner $scanner = null;
-
-	/**
-	 * SaaS API Bridge service.
-	 *
-	 * @var SaasApiBridge|null
-	 */
-	public ?SaasApiBridge $api_bridge = null;
 
 	/**
 	 * Auto-Fix Service executor.
@@ -106,18 +98,17 @@ final class Plugin {
 	}
 
 	/**
-	 * Initialize all core service components and bridges.
+	 * Initialize all core service components.
 	 *
 	 * @return void
 	 */
 	private function init_services(): void {
 		$this->scanner          = new SiteAuditScanner();
-		$this->api_bridge       = new SaasApiBridge();
-		$this->auto_fix_service = new AutoFixService( $this->api_bridge );
-		$this->rest_controller  = new RestController( $this->scanner, $this->api_bridge, $this->auto_fix_service );
+		$this->auto_fix_service = new AutoFixService();
+		$this->rest_controller  = new RestController( $this->scanner, $this->auto_fix_service );
 
 		if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			$this->admin_dashboard = new AdminDashboard( $this->scanner, $this->api_bridge, $this->auto_fix_service );
+			$this->admin_dashboard = new AdminDashboard( $this->scanner, $this->auto_fix_service );
 			$this->admin_menu      = new AdminMenu( $this->admin_dashboard );
 		}
 	}
@@ -141,7 +132,7 @@ final class Plugin {
 			add_action( 'ai_auto_fixer_run_site_audit', array( $this->scanner, 'execute_audit_job' ) );
 		}
 
-		// Allow Pro tier auto-fix features to inject filters/hooks when active.
+		// Boot active auto-fix filters and schema hooks on frontend.
 		if ( null !== $this->auto_fix_service ) {
 			$this->auto_fix_service->boot_active_fixes();
 		}
@@ -167,15 +158,6 @@ final class Plugin {
 	 */
 	public function get_scanner(): ?SiteAuditScanner {
 		return $this->scanner;
-	}
-
-	/**
-	 * Getter for SaaS API Bridge.
-	 *
-	 * @return SaasApiBridge|null
-	 */
-	public function get_api_bridge(): ?SaasApiBridge {
-		return $this->api_bridge;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Partial: AI / GEO Recommendations Cards.
+ * Partial: AI / GEO Recommendations Cards (100% Free & Standalone).
  *
  * @package AiAutoFixer
  */
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="aaf-recommendations-section">
 	<div class="aaf-section-header">
 		<h2><?php esc_html_e( 'Generative AI & Search Engine Optimization Blueprint', 'ai-auto-fixer' ); ?></h2>
-		<p><?php esc_html_e( 'Tailored AI strategies to maximize your website authority across Google Search, ChatGPT, Perplexity, and Claude.', 'ai-auto-fixer' ); ?></p>
+		<p><?php esc_html_e( 'Built-in AI optimization blueprints to maximize your website authority across Google Search, ChatGPT, Perplexity, and Claude.', 'ai-auto-fixer' ); ?></p>
 	</div>
 
 	<div class="aaf-rec-grid">
@@ -26,18 +26,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<p class="aaf-rec-desc"><?php echo esc_html( $rec['description'] ?? '' ); ?></p>
 
 					<div class="aaf-rec-footer">
-						<?php if ( ! empty( $rec['is_pro'] ) && ! $is_pro ) : ?>
-							<button class="aaf-btn aaf-btn-pro-locked aaf-open-upgrade-modal-btn">
-								<span class="dashicons dashicons-lock"></span>
-								<span><?php echo esc_html( $rec['action_label'] ?? __( 'Auto-Apply Recommendation', 'ai-auto-fixer' ) ); ?></span>
-								<span class="aaf-pill-pro-small">PRO</span>
-							</button>
-						<?php else : ?>
-							<button class="aaf-btn aaf-btn-primary aaf-execute-autofix-btn" data-action="inject_geo_schema">
-								<span class="dashicons dashicons-admin-tools"></span>
-								<span><?php echo esc_html( $rec['action_label'] ?? __( 'Apply Fix', 'ai-auto-fixer' ) ); ?></span>
-							</button>
-						<?php endif; ?>
+						<button class="aaf-btn aaf-btn-primary aaf-execute-autofix-btn" data-action="<?php echo esc_attr( $rec['action_key'] ?? 'inject_geo_schema' ); ?>">
+							<span class="dashicons dashicons-admin-tools"></span>
+							<span><?php echo esc_html( $rec['action_label'] ?? __( 'Apply Optimization', 'ai-auto-fixer' ) ); ?></span>
+						</button>
 					</div>
 				</div>
 			<?php endforeach; ?>

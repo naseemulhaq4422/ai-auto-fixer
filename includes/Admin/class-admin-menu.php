@@ -70,11 +70,11 @@ class AdminMenu {
 			array( $this->dashboard, 'render_dashboard_page' )
 		);
 
-		// Submenu: Settings & License Key.
+		// Submenu: Settings & Optimization.
 		add_submenu_page(
 			self::MENU_SLUG,
-			__( 'License & SaaS Settings', 'ai-auto-fixer' ),
-			__( 'Settings & License', 'ai-auto-fixer' ),
+			__( 'Auto-Fix Settings & Optimization', 'ai-auto-fixer' ),
+			__( 'Fix Settings', 'ai-auto-fixer' ),
 			'manage_options',
 			self::MENU_SLUG . '-settings',
 			array( $this->dashboard, 'render_settings_page' )

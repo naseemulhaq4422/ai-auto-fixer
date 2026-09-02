@@ -494,4 +494,43 @@ class SiteAuditScanner {
 	public function get_audit_status(): string {
 		return (string) get_option( self::OPTION_STATUS, 'pending' );
 	}
+
+	/**
+	 * Generate intelligent built-in GEO, AEO, and SEO recommendations locally.
+	 *
+	 * @param array $audit_data Audit findings.
+	 * @return array Recommendations list.
+	 */
+	public function get_local_recommendations( array $audit_data = array() ): array {
+		return array(
+			array(
+				'title'        => __( 'Generative AI Indexing Optimization (GEO)', 'ai-auto-fixer' ),
+				'badge'        => 'GEO High Impact',
+				'description'  => __( 'Ensure AI search engines (ChatGPT, Claude, Perplexity) can crawl your site. Granting access increases brand citations in AI-generated answers.', 'ai-auto-fixer' ),
+				'action_label' => __( 'Configure AI Crawler Rules', 'ai-auto-fixer' ),
+				'action_key'   => 'generate_ai_robots',
+			),
+			array(
+				'title'        => __( 'Entity Schema Markup for Direct AI Answers (AEO)', 'ai-auto-fixer' ),
+				'badge'        => 'AEO Answer Engine',
+				'description'  => __( 'Inject Schema.org Organization, WebSite, and SearchAction JSON-LD metadata so Large Language Models understand your authority and entity relationships.', 'ai-auto-fixer' ),
+				'action_label' => __( 'Inject Schema Markup', 'ai-auto-fixer' ),
+				'action_key'   => 'inject_geo_schema',
+			),
+			array(
+				'title'        => __( 'Robots.txt & XML Sitemap Synergy', 'ai-auto-fixer' ),
+				'badge'        => 'Crawl Speed',
+				'description'  => __( 'Direct search engines and AI spiders directly to your comprehensive XML sitemap inside robots.txt to accelerate indexing of new pages.', 'ai-auto-fixer' ),
+				'action_label' => __( 'Sync Sitemap to Robots.txt', 'ai-auto-fixer' ),
+				'action_key'   => 'enable_core_sitemap',
+			),
+			array(
+				'title'        => __( 'AI-Optimized Social OpenGraph & Entity Signals', 'ai-auto-fixer' ),
+				'badge'        => 'Entity Recognition',
+				'description'  => __( 'Configure OpenGraph title, description, and website identity so conversational agents and social crawlers parse rich page previews.', 'ai-auto-fixer' ),
+				'action_label' => __( 'Inject OpenGraph Tags', 'ai-auto-fixer' ),
+				'action_key'   => 'inject_opengraph_tags',
+			),
+		);
+	}
 }

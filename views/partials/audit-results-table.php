@@ -1,6 +1,6 @@
 <?php
 /**
- * Partial: Audit Results Table & Issue Cards.
+ * Partial: Audit Results Table & 100% Free 1-Click Auto-Fixes.
  *
  * @package AiAutoFixer
  */
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span class="aaf-badge"><?php echo count( $issues ); ?></span>
 			</button>
 			<button class="aaf-filter-btn" data-filter="critical">
-				<?php esc_html_e( 'Critical', 'ai-auto-fixer' ); ?>
+				<?php esc_html_e( 'Critical Errors', 'ai-auto-fixer' ); ?>
 				<span class="aaf-badge aaf-badge-critical"><?php echo esc_html( $counts['critical'] ?? 0 ); ?></span>
 			</button>
 			<button class="aaf-filter-btn" data-filter="warning">
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span class="aaf-badge aaf-badge-warning"><?php echo esc_html( $counts['warning'] ?? 0 ); ?></span>
 			</button>
 			<button class="aaf-filter-btn" data-filter="passed">
-				<?php esc_html_e( 'Passed', 'ai-auto-fixer' ); ?>
+				<?php esc_html_e( 'Passed Signals', 'ai-auto-fixer' ); ?>
 				<span class="aaf-badge aaf-badge-passed"><?php echo esc_html( $counts['passed'] ?? 0 ); ?></span>
 			</button>
 		</div>
@@ -39,8 +39,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php if ( empty( $issues ) ) : ?>
 			<div class="aaf-card aaf-empty-card">
 				<div class="aaf-empty-icon"><span class="dashicons dashicons-yes-alt"></span></div>
-				<h3><?php esc_html_e( 'No Critical SEO or AI Crawler Issues Found!', 'ai-auto-fixer' ); ?></h3>
-				<p><?php esc_html_e( 'Your site satisfies the baseline criteria for search engine discovery and GEO indexing.', 'ai-auto-fixer' ); ?></p>
+				<h3><?php esc_html_e( 'All SEO, Robots & AI Crawler Checks Passed!', 'ai-auto-fixer' ); ?></h3>
+				<p><?php esc_html_e( 'Your website satisfies all search engine visibility and GEO entity discovery standards.', 'ai-auto-fixer' ); ?></p>
 			</div>
 		<?php else : ?>
 			<?php foreach ( $issues as $issue ) : ?>
@@ -50,7 +50,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				$auto_fixable   = ! empty( $issue['auto_fixable'] );
 				$fix_action     = $issue['fix_action'] ?? '';
 				?>
-				<div class="aaf-card aaf-issue-card <?php echo esc_attr( $severity_class ); ?>" data-severity="<?php echo esc_attr( $issue['severity'] ?? 'info' ); ?>">
+				<div class="aaf-card aaf-issue-card <?php echo esc_attr( $severity_class ); ?>" data-severity="<?php echo esc_attr( $issue['severity'] ?? 'info' ); ?>" data-action="<?php echo esc_attr( $fix_action ); ?>">
 					<div class="aaf-issue-header">
 						<div class="aaf-issue-badges">
 							<span class="aaf-severity-badge aaf-severity-<?php echo esc_attr( $issue['severity'] ?? 'info' ); ?>">
@@ -66,7 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 						<?php if ( ! empty( $issue['recommendation'] ) ) : ?>
 							<div class="aaf-manual-fix-box">
-								<strong><?php esc_html_e( 'Manual Fix:', 'ai-auto-fixer' ); ?></strong>
+								<strong><?php esc_html_e( 'Manual Fix Guidance:', 'ai-auto-fixer' ); ?></strong>
 								<span><?php echo esc_html( $issue['recommendation'] ); ?></span>
 							</div>
 						<?php endif; ?>
@@ -74,18 +74,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<div class="aaf-issue-footer">
 						<?php if ( $auto_fixable ) : ?>
-							<?php if ( $is_pro ) : ?>
-								<button class="aaf-btn aaf-btn-primary aaf-execute-autofix-btn" data-action="<?php echo esc_attr( $fix_action ); ?>">
-									<span class="dashicons dashicons-admin-tools"></span>
-									<span class="aaf-btn-label"><?php esc_html_e( '1-Click Auto-Fix', 'ai-auto-fixer' ); ?></span>
-								</button>
-							<?php else : ?>
-								<button class="aaf-btn aaf-btn-pro-locked aaf-open-upgrade-modal-btn" data-action="<?php echo esc_attr( $fix_action ); ?>">
-									<span class="dashicons dashicons-lock"></span>
-									<span class="aaf-btn-label"><?php esc_html_e( 'Upgrade to Auto-Fix', 'ai-auto-fixer' ); ?></span>
-									<span class="aaf-pill-pro-small">PRO</span>
-								</button>
-							<?php endif; ?>
+							<button class="aaf-btn aaf-btn-primary aaf-execute-autofix-btn" data-action="<?php echo esc_attr( $fix_action ); ?>">
+								<span class="dashicons dashicons-admin-tools"></span>
+								<span class="aaf-btn-label"><?php esc_html_e( '1-Click Auto-Fix', 'ai-auto-fixer' ); ?></span>
+							</button>
 						<?php else : ?>
 							<span class="aaf-manual-only-tag"><?php esc_html_e( 'Requires Manual Configuration', 'ai-auto-fixer' ); ?></span>
 						<?php endif; ?>

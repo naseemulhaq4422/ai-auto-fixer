@@ -1,5 +1,5 @@
 /**
- * AI Auto-Fixer: Modern SaaS Admin Dashboard Stylesheet
+ * AI Auto-Fixer: Modern 100% Free & Standalone Admin Dashboard Stylesheet
  */
 
 :root {
@@ -75,6 +75,7 @@
 	align-items: center;
 	gap: 10px;
 	color: var(--aaf-text-main);
+	flex-wrap: wrap;
 }
 
 .aaf-version-badge {
@@ -84,6 +85,16 @@
 	padding: 2px 8px;
 	border-radius: 999px;
 	font-weight: 600;
+}
+
+.aaf-free-badge {
+	font-size: 11px;
+	background: #ecfdf5;
+	color: #059669;
+	border: 1px solid #a7f3d0;
+	padding: 2px 10px;
+	border-radius: 999px;
+	font-weight: 700;
 }
 
 .aaf-subtitle {
@@ -99,46 +110,12 @@
 	flex-wrap: wrap;
 }
 
-/* License Pill */
-.aaf-license-pill {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	padding: 6px 12px;
-	border-radius: 999px;
-	font-size: 12px;
-	font-weight: 600;
-}
-
-.aaf-license-free {
-	background: #f1f5f9;
-	color: var(--aaf-text-muted);
-}
-.aaf-license-free .aaf-pill-dot {
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background: #94a3b8;
-}
-
-.aaf-license-pro {
-	background: #ecfdf5;
-	color: #059669;
-}
-.aaf-license-pro .aaf-pill-dot {
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background: #10b981;
-	box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-}
-
 /* Buttons */
 .aaf-btn {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 9px 18px;
+	padding: 10px 18px;
 	border-radius: var(--aaf-radius-md);
 	font-size: 13px;
 	font-weight: 600;
@@ -181,26 +158,6 @@
 	opacity: 0.95;
 	color: #ffffff;
 	transform: translateY(-1px);
-}
-
-.aaf-btn-pro-locked {
-	background: #f8fafc;
-	border-color: #e2e8f0;
-	color: var(--aaf-text-muted);
-}
-.aaf-btn-pro-locked:hover {
-	border-color: #a855f7;
-	color: #a855f7;
-}
-
-.aaf-pill-pro-small {
-	font-size: 9px;
-	font-weight: 700;
-	background: var(--aaf-accent-gradient);
-	color: #ffffff;
-	padding: 1px 5px;
-	border-radius: 4px;
-	margin-left: 4px;
 }
 
 .aaf-spin-icon.is-spinning {
@@ -324,43 +281,6 @@
 	font-size: 12px;
 	color: var(--aaf-text-muted);
 	font-weight: 500;
-}
-
-/* Freemium Upgrade Banner */
-.aaf-upgrade-banner {
-	background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
-	border-radius: var(--aaf-radius-lg);
-	padding: 28px 32px;
-	color: #ffffff;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 24px;
-	gap: 20px;
-	flex-wrap: wrap;
-	box-shadow: 0 10px 25px rgba(30, 27, 75, 0.2);
-}
-.aaf-banner-badge {
-	font-size: 10px;
-	font-weight: 700;
-	letter-spacing: 0.08em;
-	background: rgba(255,255,255,0.15);
-	display: inline-block;
-	padding: 3px 8px;
-	border-radius: 4px;
-	margin-bottom: 8px;
-}
-.aaf-banner-content h2 {
-	margin: 0 0 6px 0;
-	font-size: 18px;
-	color: #ffffff;
-	font-weight: 700;
-}
-.aaf-banner-content p {
-	margin: 0;
-	font-size: 13px;
-	color: #cbd5e1;
-	max-width: 680px;
 }
 
 /* Tabs Navigation */
@@ -609,173 +529,25 @@
 }
 
 /* Settings Form */
-.aaf-form-group {
-	margin-bottom: 20px;
+.aaf-toggle-option {
+	padding: 16px 0;
+	border-bottom: 1px solid var(--aaf-border);
 }
-.aaf-form-group label {
-	display: block;
-	margin-bottom: 8px;
+.aaf-toggle-option:last-of-type {
+	border-bottom: none;
 }
-.aaf-input-action-row {
+.aaf-toggle-option label {
 	display: flex;
+	align-items: center;
 	gap: 10px;
-	max-width: 600px;
+	font-size: 14px;
+	cursor: pointer;
 }
-.aaf-input {
-	flex: 1;
-	padding: 8px 12px;
-	border: 1px solid var(--aaf-border);
-	border-radius: var(--aaf-radius-md);
-	font-family: monospace;
+.aaf-toggle-option .description {
+	margin: 6px 0 0 28px;
+	color: var(--aaf-text-muted);
 	font-size: 13px;
 }
-.aaf-license-status-box {
-	background: #f8fafc;
-	border: 1px solid var(--aaf-border);
-	border-radius: var(--aaf-radius-md);
-	padding: 16px;
-	max-width: 500px;
-	margin-top: 20px;
-}
-.aaf-status-row {
-	display: flex;
-	justify-content: space-between;
-	padding: 6px 0;
-	font-size: 13px;
-}
+
 .text-success { color: var(--aaf-success); }
 .text-muted { color: var(--aaf-text-muted); }
-
-/* Modal Dialog */
-.aaf-modal-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(15, 23, 42, 0.65);
-	backdrop-filter: blur(6px);
-	z-index: 99999;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 20px;
-}
-.aaf-modal-dialog {
-	background: #ffffff;
-	border-radius: var(--aaf-radius-lg);
-	max-width: 560px;
-	width: 100%;
-	box-shadow: var(--aaf-shadow-lg);
-	position: relative;
-	overflow: hidden;
-}
-.aaf-modal-close {
-	position: absolute;
-	top: 16px;
-	right: 18px;
-	background: none;
-	border: none;
-	font-size: 24px;
-	line-height: 1;
-	cursor: pointer;
-	color: #94a3b8;
-}
-.aaf-modal-close:hover { color: var(--aaf-text-main); }
-
-.aaf-modal-header {
-	padding: 32px 32px 20px 32px;
-	text-align: center;
-	background: linear-gradient(to bottom, #faf5ff, #ffffff);
-}
-.aaf-modal-icon-badge {
-	width: 56px;
-	height: 56px;
-	margin: 0 auto 16px auto;
-	background: var(--aaf-accent-gradient);
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: #ffffff;
-	box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
-}
-.aaf-modal-icon-badge .dashicons {
-	font-size: 28px;
-	width: 28px;
-	height: 28px;
-}
-.aaf-modal-header h2 {
-	margin: 0 0 8px 0;
-	font-size: 20px;
-	font-weight: 700;
-}
-.aaf-modal-header p {
-	margin: 0;
-	font-size: 13px;
-	color: var(--aaf-text-muted);
-}
-.aaf-modal-body {
-	padding: 20px 32px 24px 32px;
-}
-.aaf-pro-feature-list {
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-	margin-bottom: 24px;
-}
-.aaf-pro-feature-item {
-	display: flex;
-	gap: 12px;
-	align-items: flex-start;
-}
-.aaf-pro-feature-item .dashicons {
-	font-size: 20px;
-	margin-top: 2px;
-}
-.aaf-pro-feature-item strong {
-	display: block;
-	font-size: 13px;
-	margin-bottom: 2px;
-}
-.aaf-pro-feature-item p {
-	margin: 0;
-	font-size: 12px;
-	color: var(--aaf-text-muted);
-}
-.aaf-modal-key-box {
-	background: #f8fafc;
-	border: 1px solid var(--aaf-border);
-	border-radius: var(--aaf-radius-md);
-	padding: 16px;
-}
-.aaf-modal-key-box h4 {
-	margin: 0 0 10px 0;
-	font-size: 13px;
-}
-.aaf-modal-footer {
-	padding: 0 32px 32px 32px;
-}
-.aaf-btn-block {
-	width: 100%;
-	justify-content: center;
-	padding: 12px;
-	font-size: 14px;
-}
-.aaf-feedback-message {
-	font-size: 12px;
-	margin-top: 8px;
-	padding: 6px 10px;
-	border-radius: 4px;
-	display: none;
-}
-.aaf-feedback-message.is-error {
-	display: block;
-	background: var(--aaf-critical-bg);
-	color: var(--aaf-critical);
-}
-.aaf-feedback-message.is-success {
-	display: block;
-	background: var(--aaf-success-bg);
-	color: var(--aaf-success);
-}

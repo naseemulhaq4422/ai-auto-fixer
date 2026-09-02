@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Dashboard Controller.
+ * Admin Dashboard Controller (100% Free & Standalone).
  *
  * @package AiAutoFixer\Admin
  */
@@ -13,11 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use AiAutoFixer\Services\SiteAuditScanner;
-use AiAutoFixer\Services\SaasApiBridge;
 use AiAutoFixer\Services\AutoFixService;
 
 /**
- * Controller for the modern SaaS Admin Dashboard and settings views.
+ * Controller for the modern, 100% free Admin Dashboard and fix controls.
  */
 class AdminDashboard {
 
@@ -27,13 +26,6 @@ class AdminDashboard {
 	 * @var SiteAuditScanner
 	 */
 	private SiteAuditScanner $scanner;
-
-	/**
-	 * SaaS API Bridge instance.
-	 *
-	 * @var SaasApiBridge
-	 */
-	private SaasApiBridge $api_bridge;
 
 	/**
 	 * Auto-Fix Service instance.
@@ -46,12 +38,10 @@ class AdminDashboard {
 	 * Constructor.
 	 *
 	 * @param SiteAuditScanner $scanner Injected Scanner.
-	 * @param SaasApiBridge    $api_bridge Injected API Bridge.
 	 * @param AutoFixService   $auto_fixer Injected Auto-Fixer.
 	 */
-	public function __construct( SiteAuditScanner $scanner, SaasApiBridge $api_bridge, AutoFixService $auto_fixer ) {
+	public function __construct( SiteAuditScanner $scanner, AutoFixService $auto_fixer ) {
 		$this->scanner    = $scanner;
-		$this->api_bridge = $api_bridge;
 		$this->auto_fixer = $auto_fixer;
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -86,8 +76,6 @@ class AdminDashboard {
 			true
 		);
 
-		$license = $this->api_bridge->verify_license();
-
 		// Localize script data for REST API calls.
 		wp_localize_script(
 			'ai-auto-fixer-admin',
@@ -95,19 +83,17 @@ class AdminDashboard {
 			array(
 				'restUrl'     => esc_url_raw( rest_url( 'ai-auto-fixer/v1' ) ),
 				'nonce'       => wp_create_nonce( 'wp_rest' ),
-				'isPro'       => ! empty( $license['is_active'] ) && 'free' !== $license['tier'],
-				'licenseTier' => $license['tier'] ?? 'free',
-				'upgradeUrl'  => esc_url( 'https://app.creativesdigitalagency.com/' ),
+				'isFree'      => true,
 				'i18n'        => array(
-					'scanning'       => __( 'Running live site audit...', 'ai-auto-fixer' ),
+					'scanning'       => __( 'Running site audit...', 'ai-auto-fixer' ),
 					'scanComplete'   => __( 'Audit complete!', 'ai-auto-fixer' ),
-					'applyingFix'    => __( 'Applying auto-fix securely...', 'ai-auto-fixer' ),
+					'applyingFix'    => __( 'Applying fix...', 'ai-auto-fixer' ),
 					'fixSuccess'     => __( 'Fix applied successfully!', 'ai-auto-fixer' ),
-					'verifyingKey'   => __( 'Verifying SaaS API key...', 'ai-auto-fixer' ),
-					'keySaved'       => __( 'License successfully verified and activated!', 'ai-auto-fixer' ),
-					'upgradePrompt'  => __( 'Upgrade to Auto-Fix', 'ai-auto-fixer' ),
+					'fixingAll'      => __( 'Applying all fixes...', 'ai-auto-fixer' ),
+					'fixAllSuccess'  => __( 'All issues fixed successfully!', 'ai-auto-fixer' ),
 					'genericError'   => __( 'An unexpected error occurred. Please try again.', 'ai-auto-fixer' ),
 					'confirmFix'     => __( 'Apply this automated fix now?', 'ai-auto-fixer' ),
+					'confirmFixAll'  => __( 'Are you sure you want to apply all recommended automated fixes to this site?', 'ai-auto-fixer' ),
 				),
 			)
 		);
@@ -129,16 +115,16 @@ class AdminDashboard {
 			$audit_results = $this->scanner->run_audit( false );
 		}
 
-		$license         = $this->api_bridge->verify_license();
-		$recommendations = $this->api_bridge->fetch_ai_recommendations( $audit_results );
+		$recommendations = $this->scanner->get_local_recommendations( (array) $audit_results );
 		$fix_history     = $this->auto_fixer->get_fix_history();
 		$audit_status    = $this->scanner->get_audit_status();
+		$settings        = get_option( 'ai_auto_fixer_settings', array() );
 
 		include AI_AUTO_FIXER_PATH . 'views/admin-dashboard-page.php';
 	}
 
 	/**
-	 * Render the Settings & License page.
+	 * Render the Settings page.
 	 *
 	 * @return void
 	 */
@@ -148,21 +134,22 @@ class AdminDashboard {
 		}
 
 		$settings = get_option( 'ai_auto_fixer_settings', array() );
-		$license  = $this->api_bridge->verify_license( '', true );
 
 		// Handle manual form post save if submitted without JS.
 		if ( isset( $_POST['ai_auto_fixer_save_settings'] ) ) {
 			check_admin_referer( 'ai_auto_fixer_settings_action', 'ai_auto_fixer_settings_nonce' );
 
-			$new_api_key = isset( $_POST['api_key'] ) ? sanitize_text_field( wp_unslash( $_POST['api_key'] ) ) : '';
-			$this->api_bridge->save_api_key( $new_api_key );
-			$license = $this->api_bridge->verify_license( $new_api_key, true );
+			$settings['enable_ai_robots']  = ! empty( $_POST['enable_ai_robots'] );
+			$settings['enable_geo_schema'] = ! empty( $_POST['enable_geo_schema'] );
+			$settings['enable_opengraph']  = ! empty( $_POST['enable_opengraph'] );
 
-			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings and API Key updated.', 'ai-auto-fixer' ) . '</p></div>';
+			update_option( 'ai_auto_fixer_settings', $settings, 'no' );
+
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings successfully saved.', 'ai-auto-fixer' ) . '</p></div>';
 		}
 
 		$audit_results   = $this->scanner->get_last_audit_results();
-		$recommendations = $this->api_bridge->fetch_ai_recommendations( (array) $audit_results );
+		$recommendations = $this->scanner->get_local_recommendations( (array) $audit_results );
 		$fix_history     = $this->auto_fixer->get_fix_history();
 		$audit_status    = $this->scanner->get_audit_status();
 

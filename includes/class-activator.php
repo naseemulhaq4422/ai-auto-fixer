@@ -27,12 +27,10 @@ class Activator {
 	public static function activate(): void {
 		// Initialize default plugin options if not set.
 		$default_settings = array(
-			'api_key'             => '',
-			'license_tier'        => 'free',
-			'license_status'      => 'inactive',
 			'auto_scan_frequency' => 'weekly',
 			'enable_geo_schema'   => false,
 			'enable_ai_robots'    => false,
+			'enable_opengraph'    => false,
 			'installed_version'   => AI_AUTO_FIXER_VERSION,
 			'installed_at'        => time(),
 		);

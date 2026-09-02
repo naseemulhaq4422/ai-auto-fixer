@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Dashboard Page Template.
+ * Admin Dashboard Page Template (100% Free & Standalone).
  *
  * @package AiAutoFixer
  */
@@ -10,14 +10,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$is_pro        = ! empty( $license['is_active'] ) && 'free' !== $license['tier'];
 $score         = isset( $audit_results['score'] ) ? (int) $audit_results['score'] : 0;
 $issues        = isset( $audit_results['issues'] ) && is_array( $audit_results['issues'] ) ? $audit_results['issues'] : array();
 $passes        = isset( $audit_results['passes'] ) && is_array( $audit_results['passes'] ) ? $audit_results['passes'] : array();
 $counts        = isset( $audit_results['counts'] ) ? $audit_results['counts'] : array( 'critical' => 0, 'warning' => 0, 'info' => 0, 'passed' => 0 );
 $last_scan     = isset( $audit_results['scan_date'] ) ? $audit_results['scan_date'] : __( 'Never', 'ai-auto-fixer' );
-$current_key   = $this->api_bridge->get_api_key();
-$license_plan  = $license['plan_name'] ?? ( $is_pro ? 'Pro Tier' : 'Free Tier' );
+$fix_history   = isset( $fix_history ) && is_array( $fix_history ) ? $fix_history : array();
+$settings      = isset( $settings ) && is_array( $settings ) ? $settings : array();
 ?>
 
 <div class="wrap ai-auto-fixer-admin-wrap">
@@ -35,29 +34,24 @@ $license_plan  = $license['plan_name'] ?? ( $is_pro ? 'Pro Tier' : 'Free Tier' )
 				<h1 class="aaf-title">
 					<?php esc_html_e( 'AI Auto-Fixer', 'ai-auto-fixer' ); ?>
 					<span class="aaf-version-badge">v<?php echo esc_html( AI_AUTO_FIXER_VERSION ); ?></span>
+					<span class="aaf-free-badge"><?php esc_html_e( '100% Free & Standalone', 'ai-auto-fixer' ); ?></span>
 				</h1>
-				<p class="aaf-subtitle"><?php esc_html_e( 'AI-Powered SEO, Generative Engine (GEO) & Answer Engine (AEO) Optimization', 'ai-auto-fixer' ); ?></p>
+				<p class="aaf-subtitle"><?php esc_html_e( 'Free SEO, Generative Engine (GEO) & Answer Engine (AEO) Auditor with 1-Click Automated Fixes', 'ai-auto-fixer' ); ?></p>
 			</div>
 		</div>
 
 		<div class="aaf-header-actions">
-			<!-- License Pill -->
-			<div class="aaf-license-pill <?php echo $is_pro ? 'aaf-license-pro' : 'aaf-license-free'; ?>">
-				<span class="aaf-pill-dot"></span>
-				<span class="aaf-pill-label"><?php echo esc_html( $license_plan ); ?></span>
-			</div>
-
 			<!-- Re-Scan Button -->
 			<button id="aaf-trigger-rescan-btn" class="aaf-btn aaf-btn-secondary">
 				<span class="dashicons dashicons-update aaf-spin-icon"></span>
 				<span class="aaf-btn-text"><?php esc_html_e( 'Run Site Audit', 'ai-auto-fixer' ); ?></span>
 			</button>
 
-			<!-- Freemium Upgrade CTA -->
-			<?php if ( ! $is_pro ) : ?>
-				<button class="aaf-btn aaf-btn-gradient aaf-open-upgrade-modal-btn">
+			<!-- 1-Click Fix All Button -->
+			<?php if ( ! empty( $issues ) ) : ?>
+				<button id="aaf-fix-all-btn" class="aaf-btn aaf-btn-gradient">
 					<span class="dashicons dashicons-superhero"></span>
-					<?php esc_html_e( 'Unlock Auto-Fix Pro', 'ai-auto-fixer' ); ?>
+					<span class="aaf-btn-text"><?php esc_html_e( '1-Click Fix All Issues', 'ai-auto-fixer' ); ?></span>
 				</button>
 			<?php endif; ?>
 		</div>
@@ -110,41 +104,24 @@ $license_plan  = $license['plan_name'] ?? ( $is_pro ? 'Pro Tier' : 'Free Tier' )
 		</div>
 	</section>
 
-	<!-- Freemium Upgrade Banner (if on Free Tier) -->
-	<?php if ( ! $is_pro ) : ?>
-		<section class="aaf-upgrade-banner">
-			<div class="aaf-banner-content">
-				<div class="aaf-banner-badge"><?php esc_html_e( 'FREE TIER SITE AUDIT', 'ai-auto-fixer' ); ?></div>
-				<h2><?php esc_html_e( 'Resolve all identified SEO & AI Search issues with 1-Click Auto-Fixes', 'ai-auto-fixer' ); ?></h2>
-				<p><?php esc_html_e( 'Your free audit highlights existing errors. Upgrade to AI Auto-Fixer Pro to unlock automated robots.txt generation, AI Schema injection, and automatic crawler permissions.', 'ai-auto-fixer' ); ?></p>
-			</div>
-			<div class="aaf-banner-cta">
-				<button class="aaf-btn aaf-btn-primary aaf-open-upgrade-modal-btn">
-					<span class="dashicons dashicons-unlock"></span>
-					<?php esc_html_e( 'Activate Auto-Fix License', 'ai-auto-fixer' ); ?>
-				</button>
-			</div>
-		</section>
-	<?php endif; ?>
-
 	<!-- Tab Navigation -->
 	<nav class="aaf-tabs-nav">
 		<a href="#tab-audit" class="aaf-tab-link active" data-tab="tab-audit">
 			<span class="dashicons dashicons-search"></span>
-			<?php esc_html_e( 'Audit Findings', 'ai-auto-fixer' ); ?>
+			<?php esc_html_e( 'Audit Findings & Auto-Fixes', 'ai-auto-fixer' ); ?>
 			<span class="aaf-tab-count" id="aaf-total-issues-badge"><?php echo count( $issues ); ?></span>
 		</a>
 		<a href="#tab-recommendations" class="aaf-tab-link" data-tab="tab-recommendations">
 			<span class="dashicons dashicons-lightbulb"></span>
-			<?php esc_html_e( 'AI & GEO Recommendations', 'ai-auto-fixer' ); ?>
+			<?php esc_html_e( 'AI & GEO Optimization Blueprint', 'ai-auto-fixer' ); ?>
 		</a>
 		<a href="#tab-history" class="aaf-tab-link" data-tab="tab-history">
 			<span class="dashicons dashicons-backup"></span>
-			<?php esc_html_e( 'Fix History Log', 'ai-auto-fixer' ); ?>
+			<?php esc_html_e( 'Fix Execution Log', 'ai-auto-fixer' ); ?>
 		</a>
 		<a href="#tab-settings" class="aaf-tab-link" data-tab="tab-settings">
 			<span class="dashicons dashicons-admin-generic"></span>
-			<?php esc_html_e( 'License & Settings', 'ai-auto-fixer' ); ?>
+			<?php esc_html_e( 'Active Optimizations', 'ai-auto-fixer' ); ?>
 		</a>
 	</nav>
 
@@ -163,7 +140,7 @@ $license_plan  = $license['plan_name'] ?? ( $is_pro ? 'Pro Tier' : 'Free Tier' )
 		<div class="aaf-card">
 			<div class="aaf-card-header">
 				<h2><?php esc_html_e( 'Automated Fix Execution Log', 'ai-auto-fixer' ); ?></h2>
-				<p><?php esc_html_e( 'Record of all automated fixes applied to this WordPress site.', 'ai-auto-fixer' ); ?></p>
+				<p><?php esc_html_e( 'Record of all automated fixes applied directly to this WordPress website.', 'ai-auto-fixer' ); ?></p>
 			</div>
 			<div class="aaf-card-body">
 				<?php if ( empty( $fix_history ) ) : ?>
@@ -195,50 +172,49 @@ $license_plan  = $license['plan_name'] ?? ( $is_pro ? 'Pro Tier' : 'Free Tier' )
 		</div>
 	</section>
 
-	<!-- Tab 4: License & SaaS Settings -->
+	<!-- Tab 4: Active Optimizations / Settings -->
 	<section id="tab-settings" class="aaf-tab-content">
 		<div class="aaf-card aaf-settings-card">
 			<div class="aaf-card-header">
-				<h2><?php esc_html_e( 'SaaS API Key & Cloud License', 'ai-auto-fixer' ); ?></h2>
-				<p><?php esc_html_e( 'Connect your Next.js SaaS account to unlock automated fixes and advanced AI recommendations.', 'ai-auto-fixer' ); ?></p>
+				<h2><?php esc_html_e( 'Active AI & SEO Optimizations', 'ai-auto-fixer' ); ?></h2>
+				<p><?php esc_html_e( 'Manage continuous automatic frontend injections for AI search crawlers and structured data.', 'ai-auto-fixer' ); ?></p>
 			</div>
 			<div class="aaf-card-body">
-				<form id="aaf-license-form" method="post" action="">
+				<form id="aaf-settings-form" method="post" action="">
 					<?php wp_nonce_field( 'ai_auto_fixer_settings_action', 'ai_auto_fixer_settings_nonce' ); ?>
-					<div class="aaf-form-group">
-						<label for="aaf-api-key-input"><strong><?php esc_html_e( 'SaaS API License Key', 'ai-auto-fixer' ); ?></strong></label>
-						<div class="aaf-input-action-row">
-							<input type="password" id="aaf-api-key-input" name="api_key" value="<?php echo esc_attr( $current_key ); ?>" placeholder="aaf_live_xxxxxxxxxxxxxxxxxxxxxxxx" class="regular-text aaf-input">
-							<button type="button" id="aaf-verify-key-btn" class="aaf-btn aaf-btn-primary">
-								<span class="dashicons dashicons-yes"></span>
-								<?php esc_html_e( 'Save & Verify Key', 'ai-auto-fixer' ); ?>
-							</button>
-						</div>
-						<p class="description">
-							<?php esc_html_e( 'You can generate or retrieve your API Key in your ', 'ai-auto-fixer' ); ?>
-							<a href="https://app.creativesdigitalagency.com/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Creatives Digital Agency Cloud Dashboard', 'ai-auto-fixer' ); ?> &rarr;</a>
-						</p>
+
+					<div class="aaf-toggle-option">
+						<label>
+							<input type="checkbox" name="enable_ai_robots" value="1" <?php checked( ! empty( $settings['enable_ai_robots'] ) ); ?>>
+							<strong><?php esc_html_e( 'Enable AI Search Crawlers in robots.txt (GEO)', 'ai-auto-fixer' ); ?></strong>
+						</label>
+						<p class="description"><?php esc_html_e( 'Automatically allows ChatGPT (GPTBot), Claude (ClaudeBot), Perplexity, and CCBot to index public content.', 'ai-auto-fixer' ); ?></p>
 					</div>
 
-					<div id="aaf-license-feedback" class="aaf-feedback-message"></div>
+					<div class="aaf-toggle-option">
+						<label>
+							<input type="checkbox" name="enable_geo_schema" value="1" <?php checked( ! empty( $settings['enable_geo_schema'] ) ); ?>>
+							<strong><?php esc_html_e( 'Inject Schema.org JSON-LD Entity Graph (AEO)', 'ai-auto-fixer' ); ?></strong>
+						</label>
+						<p class="description"><?php esc_html_e( 'Outputs structured Organization, WebSite, and SearchAction JSON-LD in the HTML head.', 'ai-auto-fixer' ); ?></p>
+					</div>
 
-					<div class="aaf-license-status-box">
-						<div class="aaf-status-row">
-							<span><?php esc_html_e( 'Subscription Tier:', 'ai-auto-fixer' ); ?></span>
-							<strong id="aaf-license-tier-text"><?php echo esc_html( strtoupper( $license['tier'] ?? 'FREE' ) ); ?></strong>
-						</div>
-						<div class="aaf-status-row">
-							<span><?php esc_html_e( 'Connection Status:', 'ai-auto-fixer' ); ?></span>
-							<strong id="aaf-license-status-text" class="<?php echo $is_pro ? 'text-success' : 'text-muted'; ?>">
-								<?php echo esc_html( ucfirst( $license['status'] ?? 'inactive' ) ); ?>
-							</strong>
-						</div>
+					<div class="aaf-toggle-option">
+						<label>
+							<input type="checkbox" name="enable_opengraph" value="1" <?php checked( ! empty( $settings['enable_opengraph'] ) ); ?>>
+							<strong><?php esc_html_e( 'Enable OpenGraph Social & AI Summary Meta Tags', 'ai-auto-fixer' ); ?></strong>
+						</label>
+						<p class="description"><?php esc_html_e( 'Generates OpenGraph titles, descriptions, and URL meta tags for accurate entity previewing.', 'ai-auto-fixer' ); ?></p>
+					</div>
+
+					<div style="margin-top: 24px;">
+						<button type="submit" name="ai_auto_fixer_save_settings" class="aaf-btn aaf-btn-primary">
+							<span class="dashicons dashicons-saved"></span>
+							<?php esc_html_e( 'Save Optimization Preferences', 'ai-auto-fixer' ); ?>
+						</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</section>
-
-	<!-- Modal Dialog for Freemium Upgrade -->
-	<?php include AI_AUTO_FIXER_PATH . 'views/partials/upgrade-modal.php'; ?>
 </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto-Fix Execution Service.
+ * Auto-Fix Execution Service (100% Standalone & Free).
  *
  * @package AiAutoFixer\Services
  */
@@ -13,69 +13,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Handles the secure execution and injection of automated SEO/GEO/AEO fixes.
- * Strictly gated by valid paid SaaS license verification.
+ * Handles the instant, 100% free execution and injection of automated SEO, GEO, and AEO fixes.
+ * Fully standalone with zero external API/SaaS dependencies.
  */
 class AutoFixService {
 
 	/**
-	 * SaaS API Bridge instance.
-	 *
-	 * @var SaasApiBridge
-	 */
-	private SaasApiBridge $api_bridge;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param SaasApiBridge $api_bridge Injected API Bridge service.
-	 */
-	public function __construct( SaasApiBridge $api_bridge ) {
-		$this->api_bridge = $api_bridge;
-	}
-
-	/**
-	 * Hook active dynamic fixes into WordPress runtime if configured and licensed.
+	 * Hook active dynamic fixes into WordPress runtime.
 	 *
 	 * @return void
 	 */
 	public function boot_active_fixes(): void {
-		// Hook virtual robots.txt generation.
+		// Hook virtual robots.txt generation for AI search crawlers.
 		add_filter( 'robots_txt', array( $this, 'filter_robots_txt' ), 99, 2 );
 
-		// Hook JSON-LD Schema injection for GEO/AEO.
+		// Hook JSON-LD Schema injection for GEO/AEO entity recognition.
 		add_action( 'wp_head', array( $this, 'output_geo_schema' ), 5 );
 
-		// Hook missing meta tags injection.
+		// Hook missing meta tags and OpenGraph injection.
 		add_action( 'wp_head', array( $this, 'output_optimized_meta_tags' ), 2 );
 	}
 
 	/**
 	 * Execute an automated fix for a specific audited issue.
 	 *
-	 * STRICT SECURITY CHECK: Verifies paid license before modifying any database options or files.
+	 * 100% Free & Standalone: Runs directly inside WordPress.
 	 *
 	 * @param string $fix_action Identifier of the action to execute.
 	 * @param array  $context Additional execution context or parameters.
 	 * @return array Execution result status and message.
 	 */
 	public function execute_fix( string $fix_action, array $context = array() ): array {
-		// Strict defensive capability check.
+		// Strict capability check.
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return array(
 				'success' => false,
 				'message' => __( 'Unauthorized: You lack administrative capabilities to execute fixes.', 'ai-auto-fixer' ),
-			);
-		}
-
-		// STRICT FREEMIUM PAYWALL: Verify paid license status.
-		$license = $this->api_bridge->verify_license();
-		if ( empty( $license['is_active'] ) || 'free' === $license['tier'] ) {
-			return array(
-				'success'          => false,
-				'requires_upgrade' => true,
-				'tier'             => 'free',
-				'message'          => __( 'Auto-Fix is a Pro SaaS feature. Upgrade your subscription and enter your paid API key to unlock 1-click automatic fixes.', 'ai-auto-fixer' ),
 			);
 		}
 
@@ -109,6 +82,10 @@ class AutoFixService {
 				$result = $this->fix_opengraph_tags( $context );
 				break;
 
+			case 'fix_all':
+				$result = $this->execute_all_fixes();
+				break;
+
 			default:
 				$result = array(
 					'success' => false,
@@ -126,6 +103,59 @@ class AutoFixService {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Execute all available automated fixes in one click.
+	 *
+	 * @return array
+	 */
+	public function execute_all_fixes(): array {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return array(
+				'success' => false,
+				'message' => __( 'Unauthorized.', 'ai-auto-fixer' ),
+			);
+		}
+
+		$applied = array();
+
+		// 1. Enable Search Engine Visibility.
+		$this->fix_search_visibility();
+		$applied[] = __( 'Search Engine Visibility', 'ai-auto-fixer' );
+
+		// 2. Configure AI Robots rules.
+		$this->fix_robots_txt_directives( 'generate_ai_robots' );
+		$applied[] = __( 'AI Search Crawler Access (robots.txt)', 'ai-auto-fixer' );
+
+		// 3. Enable Core XML Sitemaps.
+		$this->fix_enable_core_sitemaps();
+		$applied[] = __( 'XML Sitemaps', 'ai-auto-fixer' );
+
+		// 4. Inject Schema.org JSON-LD.
+		$this->fix_inject_geo_schema( array() );
+		$applied[] = __( 'Schema.org JSON-LD (GEO / AEO)', 'ai-auto-fixer' );
+
+		// 5. Generate AI Meta Description.
+		$this->fix_meta_tags( 'generate_ai_meta_description', array() );
+		$applied[] = __( 'AI Meta Description', 'ai-auto-fixer' );
+
+		// 6. Inject OpenGraph tags.
+		$this->fix_opengraph_tags( array() );
+		$applied[] = __( 'OpenGraph Tags', 'ai-auto-fixer' );
+
+		$message = sprintf(
+			/* translators: %s: Comma-separated list of fixed items */
+			__( 'All automated fixes applied successfully: %s.', 'ai-auto-fixer' ),
+			implode( ', ', $applied )
+		);
+
+		return array(
+			'success' => true,
+			'action'  => 'fix_all',
+			'message' => $message,
+			'applied' => $applied,
+		);
 	}
 
 	/**
@@ -245,7 +275,7 @@ class AutoFixService {
 		if ( 'generate_ai_meta_description' === $action ) {
 			$description = ! empty( $context['meta_description'] )
 				? sanitize_text_field( $context['meta_description'] )
-				: sprintf( '%s - %s. Official website and authoritative information.', get_bloginfo( 'name' ), get_bloginfo( 'description' ) );
+				: sprintf( '%s - %s. Authoritative official website.', get_bloginfo( 'name' ), get_bloginfo( 'description' ) );
 
 			$settings['custom_meta_description'] = $description;
 			$settings['enable_meta_tags']         = true;
