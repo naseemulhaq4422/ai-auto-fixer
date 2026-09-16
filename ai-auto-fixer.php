@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       AI Auto-Fixer
  * Plugin URI:        https://app.creativesdigitalagency.com/
- * Description:       Intelligent SEO, GEO (Generative Engine Optimization), and AEO site auditor with automated 1-click AI fixes powered by a SaaS backend.
+ * Description:       100% Free & Standalone Website X-Ray, Technical SEO, Deep Indexability, Image SEO, Schema/AEO & Safe Local Remediation Engine.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4

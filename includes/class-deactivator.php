@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Deactivation Handler.
+ * Plugin Deactivation Handler (100% Free & Standalone).
  *
  * @package AiAutoFixer
  */
@@ -34,7 +34,7 @@ class Deactivator {
 		wp_clear_scheduled_hook( 'ai_auto_fixer_run_site_audit' );
 
 		// Clear transients.
-		delete_transient( 'ai_auto_fixer_license_cache' );
 		delete_transient( 'ai_auto_fixer_audit_lock' );
+		delete_transient( 'ai_auto_fixer_crawl_lock' );
 	}
 }

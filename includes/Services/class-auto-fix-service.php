@@ -350,6 +350,12 @@ class AutoFixService {
 			return;
 		}
 
+		// Coexistence Guard: If an active SEO plugin already manages Organization or WebSite, do not inject duplicates
+		$seo_plugins = \AiAutoFixer\Detectors\SeoPluginDetector::detect();
+		if ( ! empty( $seo_plugins['primary'] ) ) {
+			return;
+		}
+
 		if ( is_front_page() || is_home() ) {
 			echo "\n<!-- AI Auto-Fixer: GEO/AEO Entity Schema -->\n";
 			echo '<script type="application/ld+json">' . "\n";
@@ -365,6 +371,12 @@ class AutoFixService {
 	 */
 	public function output_optimized_meta_tags(): void {
 		$settings = get_option( 'ai_auto_fixer_settings', array() );
+
+		// Coexistence Guard: If dedicated SEO plugin is active, it owns meta tags
+		$seo_plugins = \AiAutoFixer\Detectors\SeoPluginDetector::detect();
+		if ( ! empty( $seo_plugins['primary'] ) ) {
+			return;
+		}
 
 		if ( ( is_front_page() || is_home() ) && ! empty( $settings['enable_meta_tags'] ) && ! empty( $settings['custom_meta_description'] ) ) {
 			echo "\n<!-- AI Auto-Fixer: AI Optimized Meta -->\n";
