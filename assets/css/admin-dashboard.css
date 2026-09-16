@@ -551,3 +551,336 @@
 
 .text-success { color: var(--aaf-success); }
 .text-muted { color: var(--aaf-text-muted); }
+
+/* Mode Toggle */
+.aaf-mode-toggle-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.aaf-mode-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--aaf-text-muted);
+}
+.aaf-mode-toggle {
+	display: flex;
+	background: #f1f5f9;
+	border-radius: var(--aaf-radius-md);
+	padding: 3px;
+	gap: 2px;
+}
+.aaf-mode-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 6px 12px;
+	border-radius: 6px;
+	border: none;
+	background: transparent;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--aaf-text-muted);
+	cursor: pointer;
+	transition: all 0.2s;
+}
+.aaf-mode-btn.active {
+	background: #ffffff;
+	color: var(--aaf-primary);
+	box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Progress Card */
+.aaf-progress-card {
+	background: var(--aaf-bg-card);
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+	padding: 16px 20px;
+	margin-bottom: 20px;
+	box-shadow: var(--aaf-shadow-sm);
+}
+.aaf-progress-info {
+	display: flex;
+	justify-content: space-between;
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+.aaf-progress-track {
+	height: 8px;
+	background: #f1f5f9;
+	border-radius: 999px;
+	overflow: hidden;
+}
+.aaf-progress-fill {
+	height: 100%;
+	background: var(--aaf-accent-gradient);
+	border-radius: 999px;
+	transition: width 0.3s ease;
+}
+
+/* Dual Circular Scores */
+.aaf-circle-seo { stroke: var(--aaf-primary); }
+.aaf-circle-safety { stroke: var(--aaf-success); }
+
+/* Generic Tables */
+.aaf-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+.aaf-table th, .aaf-table td {
+	padding: 12px 16px;
+	text-align: left;
+	border-bottom: 1px solid var(--aaf-border);
+	font-size: 13px;
+}
+.aaf-table th {
+	background: #f8fafc;
+	font-weight: 600;
+}
+.aaf-table-pagination {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	background: #f8fafc;
+	border-top: 1px solid var(--aaf-border);
+}
+.aaf-loading-cell, .aaf-empty-cell {
+	text-align: center;
+	padding: 32px 16px;
+	color: var(--aaf-text-muted);
+}
+
+/* Sub-filter Bars */
+.aaf-index-filter-bar, .aaf-image-filter-bar, .aaf-media-filter-bar {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 14px;
+}
+
+/* Compatibility & Bot Grids */
+.aaf-compat-grid, .aaf-bot-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 16px;
+}
+.aaf-compat-item, .aaf-bot-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	background: #f8fafc;
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+}
+.aaf-bot-info {
+	display: flex;
+	flex-direction: column;
+}
+.aaf-bot-desc {
+	font-size: 11px;
+	color: var(--aaf-text-muted);
+}
+
+/* Modals */
+.aaf-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 100050;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.aaf-modal-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(15, 23, 42, 0.65);
+	backdrop-filter: blur(4px);
+}
+.aaf-modal-container {
+	position: relative;
+	background: #ffffff;
+	border-radius: var(--aaf-radius-lg);
+	width: 90%;
+	max-width: 680px;
+	box-shadow: var(--aaf-shadow-lg);
+	overflow: hidden;
+	z-index: 10;
+}
+.aaf-modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 18px 24px;
+	border-bottom: 1px solid var(--aaf-border);
+	background: #f8fafc;
+}
+.aaf-modal-title-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.aaf-modal-title-group h3 {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 700;
+}
+.aaf-modal-close {
+	background: transparent;
+	border: none;
+	font-size: 24px;
+	line-height: 1;
+	cursor: pointer;
+	color: var(--aaf-text-muted);
+}
+.aaf-modal-body {
+	padding: 24px;
+	max-height: 70vh;
+	overflow-y: auto;
+}
+.aaf-modal-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 16px 24px;
+	background: #f8fafc;
+	border-top: 1px solid var(--aaf-border);
+}
+
+/* Diff View */
+.aaf-preview-alert {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: var(--aaf-info-bg);
+	border: 1px solid #bfdbfe;
+	border-radius: var(--aaf-radius-md);
+	padding: 10px 14px;
+	margin-bottom: 18px;
+	font-size: 13px;
+	color: #1e40af;
+}
+.aaf-diff-comparison {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14px;
+	margin-bottom: 16px;
+}
+.aaf-diff-column {
+	border-radius: var(--aaf-radius-md);
+	overflow: hidden;
+	border: 1px solid var(--aaf-border);
+}
+.aaf-diff-before .aaf-diff-label {
+	background: #fee2e2;
+	color: #991b1b;
+	padding: 8px 12px;
+	font-size: 12px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+.aaf-diff-after .aaf-diff-label {
+	background: #dcfce7;
+	color: #166534;
+	padding: 8px 12px;
+	font-size: 12px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+.aaf-diff-code {
+	margin: 0;
+	padding: 14px;
+	background: #f8fafc;
+	font-size: 12px;
+	line-height: 1.5;
+	font-family: monospace;
+	white-space: pre-wrap;
+	word-break: break-all;
+	min-height: 80px;
+}
+.aaf-preview-meta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 12px;
+}
+.aaf-risk-badge {
+	font-size: 11px;
+	font-weight: 700;
+	padding: 3px 8px;
+	border-radius: 999px;
+}
+.aaf-risk-low { background: #dcfce7; color: #166534; }
+.aaf-risk-medium { background: #fef3c7; color: #92400e; }
+.aaf-risk-high { background: #fee2e2; color: #991b1b; }
+
+/* Smart ALT Modal */
+.aaf-smart-alt-preview-card {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	background: #f8fafc;
+	border: 1px solid var(--aaf-border);
+	padding: 14px;
+	border-radius: var(--aaf-radius-md);
+}
+.aaf-smart-alt-img-wrap {
+	width: 80px;
+	height: 80px;
+	border-radius: var(--aaf-radius-sm);
+	overflow: hidden;
+	background: #e2e8f0;
+	flex-shrink: 0;
+}
+.aaf-smart-alt-img-wrap img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.aaf-smart-alt-details {
+	flex: 1;
+}
+.aaf-confidence-meter {
+	margin: 8px 0;
+}
+.aaf-confidence-bar {
+	height: 6px;
+	background: #e2e8f0;
+	border-radius: 999px;
+	overflow: hidden;
+	margin-top: 4px;
+}
+.aaf-confidence-fill {
+	height: 100%;
+	background: var(--aaf-success);
+	transition: width 0.3s ease;
+}
+.aaf-input-field {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-sm);
+	font-size: 13px;
+	box-sizing: border-box;
+}
+
+/* Mode toggling behavior: in audit mode, hide direct auto-fix buttons and emphasize preview */
+[data-mode="audit"] .aaf-execute-autofix-btn .aaf-btn-label::before {
+	content: "Inspect & ";
+}
+[data-mode="audit"] #aaf-fix-all-btn {
+	opacity: 0.7;
+}
+

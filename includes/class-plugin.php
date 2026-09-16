@@ -103,6 +103,8 @@ final class Plugin {
 	 * @return void
 	 */
 	private function init_services(): void {
+		\AiAutoFixer\Database\MigrationManager::maybe_migrate();
+
 		$this->scanner          = new SiteAuditScanner();
 		$this->auto_fix_service = new AutoFixService();
 		$this->rest_controller  = new RestController( $this->scanner, $this->auto_fix_service );

@@ -25,6 +25,9 @@ class Activator {
 	 * @return void
 	 */
 	public static function activate(): void {
+		// Run database migrations/table installations.
+		\AiAutoFixer\Database\MigrationManager::maybe_migrate();
+
 		// Initialize default plugin options if not set.
 		$default_settings = array(
 			'auto_scan_frequency' => 'weekly',

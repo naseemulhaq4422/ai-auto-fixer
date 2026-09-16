@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Dashboard Controller (100% Free & Standalone).
+ * Admin Dashboard Controller (Multi-Tab & Modular Views).
  *
  * @package AiAutoFixer\Admin
  */
@@ -14,9 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use AiAutoFixer\Services\SiteAuditScanner;
 use AiAutoFixer\Services\AutoFixService;
+use AiAutoFixer\Services\RollbackManager;
+use AiAutoFixer\Detectors\SeoPluginDetector;
+use AiAutoFixer\Detectors\ConflictDetector;
+use AiAutoFixer\Detectors\SchemaOwnershipDetector;
+use AiAutoFixer\Detectors\MetaOwnershipDetector;
 
 /**
- * Controller for the modern, 100% free Admin Dashboard and fix controls.
+ * Controller for the modern, multi-tab Admin Dashboard and interactive remediation controls.
  */
 class AdminDashboard {
 
@@ -48,18 +53,16 @@ class AdminDashboard {
 	}
 
 	/**
-	 * Enqueue modern CSS and JS assets only on AI Auto-Fixer admin screens.
+	 * Enqueue CSS and JS assets on AI Auto-Fixer admin screens.
 	 *
 	 * @param string $hook The current admin page hook.
 	 * @return void
 	 */
 	public function enqueue_assets( string $hook ): void {
-		// Only enqueue on AI Auto-Fixer dashboard and settings pages.
 		if ( strpos( $hook, 'ai-auto-fixer' ) === false ) {
 			return;
 		}
 
-		// Enqueue CSS.
 		wp_enqueue_style(
 			'ai-auto-fixer-admin',
 			AI_AUTO_FIXER_URL . 'assets/css/admin-dashboard.css',
@@ -67,7 +70,6 @@ class AdminDashboard {
 			AI_AUTO_FIXER_VERSION
 		);
 
-		// Enqueue JS.
 		wp_enqueue_script(
 			'ai-auto-fixer-admin',
 			AI_AUTO_FIXER_URL . 'assets/js/admin-dashboard.js',
@@ -76,7 +78,6 @@ class AdminDashboard {
 			true
 		);
 
-		// Localize script data for REST API calls.
 		wp_localize_script(
 			'ai-auto-fixer-admin',
 			'aiAutoFixerData',
@@ -85,46 +86,90 @@ class AdminDashboard {
 				'nonce'       => wp_create_nonce( 'wp_rest' ),
 				'isFree'      => true,
 				'i18n'        => array(
-					'scanning'       => __( 'Running site audit...', 'ai-auto-fixer' ),
-					'scanComplete'   => __( 'Audit complete!', 'ai-auto-fixer' ),
-					'applyingFix'    => __( 'Applying fix...', 'ai-auto-fixer' ),
-					'fixSuccess'     => __( 'Fix applied successfully!', 'ai-auto-fixer' ),
-					'fixingAll'      => __( 'Applying all fixes...', 'ai-auto-fixer' ),
-					'fixAllSuccess'  => __( 'All issues fixed successfully!', 'ai-auto-fixer' ),
-					'genericError'   => __( 'An unexpected error occurred. Please try again.', 'ai-auto-fixer' ),
-					'confirmFix'     => __( 'Apply this automated fix now?', 'ai-auto-fixer' ),
-					'confirmFixAll'  => __( 'Are you sure you want to apply all recommended automated fixes to this site?', 'ai-auto-fixer' ),
+					'scanning'         => __( 'Running site audit & deep crawl...', 'ai-auto-fixer' ),
+					'scanComplete'     => __( 'Audit complete!', 'ai-auto-fixer' ),
+					'applyingFix'      => __( 'Applying fix...', 'ai-auto-fixer' ),
+					'fixSuccess'       => __( 'Fix applied successfully!', 'ai-auto-fixer' ),
+					'fixingAll'        => __( 'Applying all safe fixes...', 'ai-auto-fixer' ),
+					'fixAllSuccess'    => __( 'All safe issues fixed successfully!', 'ai-auto-fixer' ),
+					'rollingBack'      => __( 'Reverting changes...', 'ai-auto-fixer' ),
+					'rollbackSuccess'  => __( 'Rollback completed successfully!', 'ai-auto-fixer' ),
+					'trashingMedia'    => __( 'Moving to trash...', 'ai-auto-fixer' ),
+					'genericError'     => __( 'An unexpected error occurred. Please try again.', 'ai-auto-fixer' ),
+					'confirmFix'       => __( 'Apply this automated fix now?', 'ai-auto-fixer' ),
+					'confirmFixAll'    => __( 'Apply all verified low-risk fixes across the website? A pre-fix snapshot will be automatically saved for 1-click rollback.', 'ai-auto-fixer' ),
+					'confirmRollback'  => __( 'Are you sure you want to revert this change back to its exact pre-fix state?', 'ai-auto-fixer' ),
+					'confirmTrash'     => __( 'Move this media item to WordPress Trash? (It will NOT be permanently deleted and can be restored at any time).', 'ai-auto-fixer' ),
 				),
 			)
 		);
 	}
 
 	/**
-	 * Render the primary Audit Dashboard page.
+	 * Primary Dashboard / Overview tab.
 	 *
 	 * @return void
 	 */
 	public function render_dashboard_page(): void {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'ai-auto-fixer' ) );
-		}
-
-		// Retrieve latest audit results, fallback to on-demand run if null.
-		$audit_results = $this->scanner->get_last_audit_results();
-		if ( null === $audit_results ) {
-			$audit_results = $this->scanner->run_audit( false );
-		}
-
-		$recommendations = $this->scanner->get_local_recommendations( (array) $audit_results );
-		$fix_history     = $this->auto_fixer->get_fix_history();
-		$audit_status    = $this->scanner->get_audit_status();
-		$settings        = get_option( 'ai_auto_fixer_settings', array() );
-
-		include AI_AUTO_FIXER_PATH . 'views/admin-dashboard-page.php';
+		$this->render_view( 'overview' );
 	}
 
 	/**
-	 * Render the Settings page.
+	 * Indexation tab.
+	 *
+	 * @return void
+	 */
+	public function render_indexation_page(): void {
+		$this->render_view( 'indexation' );
+	}
+
+	/**
+	 * Image SEO tab.
+	 *
+	 * @return void
+	 */
+	public function render_images_page(): void {
+		$this->render_view( 'images' );
+	}
+
+	/**
+	 * Media Cleanup tab.
+	 *
+	 * @return void
+	 */
+	public function render_media_page(): void {
+		$this->render_view( 'media' );
+	}
+
+	/**
+	 * Technical SEO tab.
+	 *
+	 * @return void
+	 */
+	public function render_technical_page(): void {
+		$this->render_view( 'technical' );
+	}
+
+	/**
+	 * Schema & AI/GEO tab.
+	 *
+	 * @return void
+	 */
+	public function render_schema_page(): void {
+		$this->render_view( 'schema' );
+	}
+
+	/**
+	 * Fix History tab.
+	 *
+	 * @return void
+	 */
+	public function render_history_page(): void {
+		$this->render_view( 'history' );
+	}
+
+	/**
+	 * Settings tab.
 	 *
 	 * @return void
 	 */
@@ -135,7 +180,7 @@ class AdminDashboard {
 
 		$settings = get_option( 'ai_auto_fixer_settings', array() );
 
-		// Handle manual form post save if submitted without JS.
+		// Handle manual settings post save
 		if ( isset( $_POST['ai_auto_fixer_save_settings'] ) ) {
 			check_admin_referer( 'ai_auto_fixer_settings_action', 'ai_auto_fixer_settings_nonce' );
 
@@ -148,10 +193,35 @@ class AdminDashboard {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings successfully saved.', 'ai-auto-fixer' ) . '</p></div>';
 		}
 
-		$audit_results   = $this->scanner->get_last_audit_results();
+		$this->render_view( 'settings' );
+	}
+
+	/**
+	 * Master view renderer.
+	 *
+	 * @param string $active_tab Active tab slug.
+	 * @return void
+	 */
+	private function render_view( string $active_tab ): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'ai-auto-fixer' ) );
+		}
+
+		$audit_results = $this->scanner->get_last_audit_results();
+		if ( null === $audit_results ) {
+			$audit_results = $this->scanner->run_audit( false );
+		}
+
 		$recommendations = $this->scanner->get_local_recommendations( (array) $audit_results );
-		$fix_history     = $this->auto_fixer->get_fix_history();
+		$fix_history     = RollbackManager::get_snapshots( 50 );
 		$audit_status    = $this->scanner->get_audit_status();
+		$settings        = get_option( 'ai_auto_fixer_settings', array() );
+
+		// Environment detectors
+		$detected_seo_plugins = SeoPluginDetector::detect();
+		$detected_conflicts   = ConflictDetector::detect_conflicts();
+
+		$current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : $active_tab;
 
 		include AI_AUTO_FIXER_PATH . 'views/admin-dashboard-page.php';
 	}
