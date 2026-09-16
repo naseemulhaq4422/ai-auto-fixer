@@ -456,7 +456,9 @@ class RestController extends WP_REST_Controller {
 			if ( ! empty( $last_results['issues'] ) ) {
 				$raw_issues = $last_results['issues'];
 				if ( ! empty( $severity ) && 'all' !== $severity ) {
-					$raw_issues = array_filter( $raw_issues, fn( $i ) => ( $i['severity'] ?? '' ) === $severity );
+					$raw_issues = array_filter( $raw_issues, function( $i ) use ( $severity ) {
+						return ( $i['severity'] ?? '' ) === $severity;
+					} );
 				}
 				$total = count( $raw_issues );
 				$items = array_slice( array_values( $raw_issues ), $offset, $per_page );
@@ -561,7 +563,9 @@ class RestController extends WP_REST_Controller {
 		$items = $audit['issues'];
 
 		if ( 'all' !== $filter ) {
-			$items = array_filter( $items, fn( $i ) => ( $i['issue_type'] ?? '' ) === $filter );
+			$items = array_filter( $items, function( $i ) use ( $filter ) {
+				return ( $i['issue_type'] ?? '' ) === $filter;
+			} );
 		}
 
 		$total       = count( $items );
@@ -653,7 +657,9 @@ class RestController extends WP_REST_Controller {
 		$items = $audit['items'];
 
 		if ( 'all' !== $status ) {
-			$items = array_filter( $items, fn( $i ) => strtolower( $i['status'] ?? '' ) === strtolower( $status ) );
+			$items = array_filter( $items, function( $i ) use ( $status ) {
+				return strtolower( $i['status'] ?? '' ) === strtolower( $status );
+			} );
 		}
 
 		$total       = count( $items );

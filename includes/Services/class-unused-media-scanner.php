@@ -230,4 +230,72 @@ class UnusedMediaScanner {
 			'message' => __( 'Failed to move media to Trash. Verify file permissions.', 'ai-auto-fixer' ),
 		);
 	}
+
+	/**
+	 * Audit WordPress Media Library attachments for unlinked or unused media files.
+	 *
+	 * @param int $limit Maximum number of media items to inspect.
+	 * @return array{audited_count: int, items: array, issues: array}
+	 */
+	public static function audit_media_library( int $limit = 50 ): array {
+		$query_args = array(
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => $limit,
+			'fields'         => 'ids',
+		);
+
+		$attachments = get_posts( $query_args );
+		$items       = array();
+		$issues      = array();
+		$audited     = 0;
+		$counts      = array(
+			'in_use'          => 0,
+			'safe_to_review'  => 0,
+			'possibly_unused' => 0,
+			'unknown'         => 0,
+		);
+
+		foreach ( $attachments as $attachment_id ) {
+			$audited++;
+			$attachment_id = (int) $attachment_id;
+			$inspection    = self::inspect_media_dependencies( $attachment_id );
+			$items[]       = $inspection;
+
+			$status_key = strtolower( (string) $inspection['status'] );
+			if ( isset( $counts[ $status_key ] ) ) {
+				$counts[ $status_key ]++;
+			} else {
+				$counts['unknown']++;
+			}
+
+			if ( self::STATUS_SAFE_TO_REVIEW === $inspection['status'] || self::STATUS_POSSIBLY_UNUSED === $inspection['status'] ) {
+				$issues[] = array(
+					'id'             => 'unused_media_' . $attachment_id,
+					'object_id'      => $attachment_id,
+					'object_type'    => 'media',
+					'issue_type'     => 'unlinked_media',
+					'category'       => 'media_cleanup',
+					'severity'       => 'info',
+					'title'          => sprintf( __( 'Unlinked Media File: %s', 'ai-auto-fixer' ), esc_html( $inspection['filename'] ) ),
+					'message'        => sprintf( __( 'No active references found across posts, widgets, or WooCommerce for "%s".', 'ai-auto-fixer' ), esc_html( $inspection['filename'] ) ),
+					'description'    => sprintf( __( 'No active references found across posts, widgets, or WooCommerce for "%s".', 'ai-auto-fixer' ), esc_html( $inspection['filename'] ) ),
+					'recommendation' => __( 'Review item. If completely redundant, move to WordPress Trash to free server storage.', 'ai-auto-fixer' ),
+					'risk_level'     => 'medium',
+					'auto_fixable'   => false,
+					'fix_available'  => 0,
+					'fix_id'         => null,
+					'can_trash'      => $inspection['can_trash'],
+					'url'            => $inspection['url'],
+				);
+			}
+		}
+
+		return array(
+			'audited_count' => $audited,
+			'items'         => $items,
+			'issues'        => $issues,
+			'counts'        => $counts,
+		);
+	}
 }

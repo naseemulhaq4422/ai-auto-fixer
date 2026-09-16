@@ -65,17 +65,33 @@ class Autoloader {
 
 		$file_path = AI_AUTO_FIXER_PATH . 'includes' . DIRECTORY_SEPARATOR . $sub_path . $formatted_class_name;
 
-		// Fallback check for standard PSR-4 naming if class file format is direct.
-		if ( ! file_exists( $file_path ) ) {
-			$psr4_file = AI_AUTO_FIXER_PATH . 'includes' . DIRECTORY_SEPARATOR . $sub_path . $class_name . '.php';
-			if ( file_exists( $psr4_file ) ) {
-				require_once $psr4_file;
+		if ( file_exists( $file_path ) ) {
+			require_once $file_path;
+			return;
+		}
+
+		// Alternative 1: woocommerce without hyphen (e.g. class-woocommerce-scanner.php)
+		$alt_name = str_replace( 'woo-commerce', 'woocommerce', $formatted_class_name );
+		$alt_file = AI_AUTO_FIXER_PATH . 'includes' . DIRECTORY_SEPARATOR . $sub_path . $alt_name;
+		if ( file_exists( $alt_file ) ) {
+			require_once $alt_file;
+			return;
+		}
+
+		// Alternative 2: FixPolicyInterface -> class-fix-policy.php
+		if ( strpos( $formatted_class_name, 'fix-policy-interface' ) !== false ) {
+			$fp_file = AI_AUTO_FIXER_PATH . 'includes' . DIRECTORY_SEPARATOR . $sub_path . 'class-fix-policy.php';
+			if ( file_exists( $fp_file ) ) {
+				require_once $fp_file;
 				return;
 			}
 		}
 
-		if ( file_exists( $file_path ) ) {
-			require_once $file_path;
+		// Alternative 3: Standard PSR-4
+		$psr4_file = AI_AUTO_FIXER_PATH . 'includes' . DIRECTORY_SEPARATOR . $sub_path . $class_name . '.php';
+		if ( file_exists( $psr4_file ) ) {
+			require_once $psr4_file;
+			return;
 		}
 	}
 }

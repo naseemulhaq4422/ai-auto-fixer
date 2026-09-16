@@ -117,4 +117,13 @@ class SeoPluginDetector {
 		$first = reset( $plugins );
 		return $first['name'] ?? null;
 	}
+
+	/**
+	 * Direct alias for detect_active_seo_plugins().
+	 *
+	 * @return array<string, array{name: string, active: bool, version: string|null, slug: string}>
+	 */
+	public static function detect(): array {
+		return self::detect_active_seo_plugins();
+	}
 }

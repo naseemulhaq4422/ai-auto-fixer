@@ -76,6 +76,28 @@ class HttpClient {
 	}
 
 	/**
+	 * Convenient alias for safe_get().
+	 *
+	 * @param string $url Target URL.
+	 * @param array  $args Request arguments.
+	 * @return array|WP_Error Response or error.
+	 */
+	public static function get( string $url, array $args = array() ) {
+		return self::safe_get( $url, $args );
+	}
+
+	/**
+	 * Convenient alias for safe_head().
+	 *
+	 * @param string $url Target URL.
+	 * @param array  $args Request arguments.
+	 * @return array|WP_Error Response or error.
+	 */
+	public static function head( string $url, array $args = array() ) {
+		return self::safe_head( $url, $args );
+	}
+
+	/**
 	 * Validate URL against protocol restrictions, private IP ranges, and local hostnames.
 	 *
 	 * @param string $url URL to inspect.
@@ -99,21 +121,34 @@ class HttpClient {
 			return new WP_Error( 'ssrf_missing_host', __( 'Invalid URL: Hostname missing.', 'ai-auto-fixer' ) );
 		}
 
-		// 2. Localhost and cloud metadata hostnames
-		$forbidden_hosts = array(
-			'localhost',
-			'127.0.0.1',
-			'0.0.0.0',
+		// Strict cloud metadata blocks (always forbidden, unconditionally)
+		$cloud_metadata = array(
 			'169.254.169.254',
 			'metadata.google.internal',
 			'instance-data',
 		);
-
-		if ( in_array( $host, $forbidden_hosts, true ) ) {
-			return new WP_Error( 'ssrf_blocked_host', __( 'Access to local or cloud metadata endpoints is prohibited.', 'ai-auto-fixer' ) );
+		if ( in_array( $host, $cloud_metadata, true ) ) {
+			return new WP_Error( 'ssrf_blocked_host', __( 'Access to cloud metadata endpoints is prohibited.', 'ai-auto-fixer' ) );
 		}
 
-		// 3. Resolve IP and block private/reserved subnets
+		// Self-host exemption: If auditing the site's own domain, permit loopback/internal crawl
+		$home_host = strtolower( (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+		if ( ! empty( $home_host ) && $host === $home_host ) {
+			return true;
+		}
+
+		// 2. Forbidden hosts for external requests (localhost, 127.0.0.1, 0.0.0.0)
+		$forbidden_hosts = array(
+			'localhost',
+			'127.0.0.1',
+			'0.0.0.0',
+		);
+
+		if ( in_array( $host, $forbidden_hosts, true ) ) {
+			return new WP_Error( 'ssrf_blocked_host', __( 'Access to local or loopback endpoints is prohibited.', 'ai-auto-fixer' ) );
+		}
+
+		// 3. Resolve IP and block private/reserved subnets for external requests
 		$ip = gethostbyname( $host );
 		if ( $ip !== $host ) {
 			if ( self::is_private_or_reserved_ip( $ip ) ) {

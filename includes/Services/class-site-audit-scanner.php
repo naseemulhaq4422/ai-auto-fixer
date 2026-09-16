@@ -236,12 +236,12 @@ class SiteAuditScanner {
 
 		// 16. Calculate Dual Health Scores
 		$pillars = array(
-			'technical'    => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, fn( $i ) => ( $i['category'] ?? '' ) === 'technical' ) ),
-			'indexability' => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, fn( $i ) => in_array( $i['category'] ?? '', array( 'indexability', 'robots', 'sitemap' ), true ) ) ),
-			'on_page'      => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, fn( $i ) => ( $i['category'] ?? '' ) === 'on_page' ) ),
-			'schema'       => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, fn( $i ) => ( $i['category'] ?? '' ) === 'schema' ) ),
-			'ai_geo'       => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, fn( $i ) => in_array( $i['category'] ?? '', array( 'geo_aeo', 'ai_crawlers' ), true ) ) ),
-			'images'       => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, fn( $i ) => ( $i['category'] ?? '' ) === 'images' ) ),
+			'technical'    => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, function( $i ) { return ( $i['category'] ?? '' ) === 'technical'; } ) ),
+			'indexability' => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, function( $i ) { return in_array( $i['category'] ?? '', array( 'indexability', 'robots', 'sitemap' ), true ); } ) ),
+			'on_page'      => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, function( $i ) { return ( $i['category'] ?? '' ) === 'on_page'; } ) ),
+			'schema'       => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, function( $i ) { return ( $i['category'] ?? '' ) === 'schema'; } ) ),
+			'ai_geo'       => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, function( $i ) { return in_array( $i['category'] ?? '', array( 'geo_aeo', 'ai_crawlers' ), true ); } ) ),
+			'images'       => HealthScore::deduct_score_from_issues( 100, array_filter( $all_issues, function( $i ) { return ( $i['category'] ?? '' ) === 'images'; } ) ),
 		);
 
 		$safety_factors = array(

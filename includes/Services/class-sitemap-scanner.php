@@ -31,6 +31,15 @@ class SitemapScanner {
 	);
 
 	/**
+	 * Direct alias for audit_sitemaps().
+	 *
+	 * @return array
+	 */
+	public static function discover_sitemaps(): array {
+		return self::audit_sitemaps();
+	}
+
+	/**
 	 * Run comprehensive multi-source sitemap discovery and health audit.
 	 *
 	 * @return array{

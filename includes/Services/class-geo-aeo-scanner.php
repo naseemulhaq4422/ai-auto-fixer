@@ -20,6 +20,26 @@ use AiAutoFixer\Detectors\SchemaOwnershipDetector;
 class GeoAeoScanner {
 
 	/**
+	 * Direct alias for audit_geo_aeo() with automatic homepage fetching if HTML is omitted.
+	 *
+	 * @param string $url Target URL.
+	 * @param string $html HTML markup.
+	 * @return array
+	 */
+	public static function audit_readiness( string $url = '', string $html = '' ): array {
+		if ( empty( $url ) ) {
+			$url = home_url( '/' );
+		}
+		if ( empty( $html ) ) {
+			$res  = HttpClient::safe_get( $url );
+			$html = ( ! is_wp_error( $res ) && 200 === wp_remote_retrieve_response_code( $res ) )
+				? wp_remote_retrieve_body( $res )
+				: '';
+		}
+		return self::audit_geo_aeo( $html, $url );
+	}
+
+	/**
 	 * Run deep 4-dimensional GEO/AEO readiness audit.
 	 *
 	 * @param string $html Rendered HTML markup.

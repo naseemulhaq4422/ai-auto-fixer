@@ -20,6 +20,23 @@ use AiAutoFixer\Detectors\SchemaOwnershipDetector;
 class SchemaScanner {
 
 	/**
+	 * Run Schema.org audit accepting either ($url, $html) or ($html, $page_type).
+	 *
+	 * @param string $param1 URL or HTML string.
+	 * @param string $param2 HTML or page type string.
+	 * @return array
+	 */
+	public static function audit_schemas( string $param1, string $param2 = '' ): array {
+		if ( strpos( $param1, '<' ) !== false ) {
+			return self::audit_schema( $param1, ! empty( $param2 ) ? $param2 : 'general' );
+		}
+		if ( ! empty( $param2 ) && strpos( $param2, '<' ) !== false ) {
+			return self::audit_schema( $param2, 'general' );
+		}
+		return self::audit_schema( $param2, 'general' );
+	}
+
+	/**
 	 * Run complete Schema.org audit on an HTML document.
 	 *
 	 * @param string $html Rendered HTML markup.

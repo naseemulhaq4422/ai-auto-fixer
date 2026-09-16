@@ -89,6 +89,16 @@ class AiBotScanner {
 	}
 
 	/**
+	 * Direct alias for audit_ai_bots().
+	 *
+	 * @param string|null $robots_txt Optional pre-fetched robots.txt content.
+	 * @return array
+	 */
+	public static function audit_ai_crawlers( ?string $robots_txt = null ): array {
+		return self::audit_ai_bots( $robots_txt );
+	}
+
+	/**
 	 * Audit all registered AI search crawlers against active robots.txt directives.
 	 *
 	 * @param string|null $robots_txt Optional pre-fetched robots.txt content.

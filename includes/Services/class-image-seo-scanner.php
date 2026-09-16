@@ -258,4 +258,91 @@ class ImageSeoScanner {
 			'requires_review' => $requires_review,
 		);
 	}
+
+	/**
+	 * Audit WordPress Media Library attachments for missing or low-quality ALT text.
+	 *
+	 * @param int $limit Maximum number of media items to audit.
+	 * @return array{audited_count: int, issues: array, passes: array}
+	 */
+	public static function audit_media_library( int $limit = 50 ): array {
+		$query_args = array(
+			'post_type'      => 'attachment',
+			'post_mime_type' => 'image',
+			'post_status'    => 'inherit',
+			'posts_per_page' => $limit,
+			'fields'         => 'ids',
+		);
+
+		$attachments = get_posts( $query_args );
+		$issues      = array();
+		$passes      = array();
+		$audited     = 0;
+
+		foreach ( $attachments as $attachment_id ) {
+			$audited++;
+			$attachment_id = (int) $attachment_id;
+			$alt           = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+			$title         = get_the_title( $attachment_id );
+			$url           = wp_get_attachment_url( $attachment_id );
+
+			if ( empty( $alt ) ) {
+				$suggestion = self::generate_smart_alt( $attachment_id );
+				$issues[]   = array(
+					'id'             => 'missing_alt_' . $attachment_id,
+					'object_id'      => $attachment_id,
+					'object_type'    => 'media',
+					'issue_type'     => 'missing_alt',
+					'category'       => 'images',
+					'severity'       => 'warning',
+					'title'          => sprintf( __( 'Missing ALT Text: %s', 'ai-auto-fixer' ), esc_html( $title ?: basename( (string) $url ) ) ),
+					'message'        => sprintf( __( 'Image "%s" is missing an ALT attribute.', 'ai-auto-fixer' ), esc_html( $title ) ),
+					'description'    => sprintf( __( 'Image "%s" is missing an ALT attribute.', 'ai-auto-fixer' ), esc_html( $title ) ),
+					'recommendation' => sprintf( __( 'Suggested ALT: "%s" (%d%% confidence).', 'ai-auto-fixer' ), esc_html( $suggestion['suggested_alt'] ), $suggestion['confidence'] ),
+					'suggested_alt'  => $suggestion['suggested_alt'],
+					'confidence'     => $suggestion['confidence'],
+					'risk_level'     => 'low',
+					'auto_fixable'   => true,
+					'fix_available'  => 1,
+					'fix_id'         => 'apply_image_alt',
+					'url'            => $url,
+				);
+			} else {
+				$quality = self::evaluate_alt_quality( (string) $alt );
+				if ( $quality['issue'] ) {
+					$suggestion = self::generate_smart_alt( $attachment_id );
+					$issues[]   = array(
+						'id'             => 'weak_alt_' . $attachment_id,
+						'object_id'      => $attachment_id,
+						'object_type'    => 'media',
+						'issue_type'     => $quality['type'],
+						'category'       => 'images',
+						'severity'       => 'recommendation',
+						'title'          => sprintf( __( 'Weak ALT Text: %s', 'ai-auto-fixer' ), esc_html( $title ) ),
+						'message'        => $quality['message'],
+						'description'    => $quality['message'],
+						'recommendation' => $quality['recommendation'],
+						'suggested_alt'  => $suggestion['suggested_alt'],
+						'confidence'     => $suggestion['confidence'],
+						'risk_level'     => 'low',
+						'auto_fixable'   => true,
+						'fix_available'  => 1,
+						'fix_id'         => 'apply_image_alt',
+						'url'            => $url,
+					);
+				} else {
+					$passes[] = array(
+						'title'       => sprintf( __( 'Optimized ALT Text: %s', 'ai-auto-fixer' ), esc_html( $title ) ),
+						'description' => esc_html( (string) $alt ),
+					);
+				}
+			}
+		}
+
+		return array(
+			'audited_count' => $audited,
+			'issues'        => $issues,
+			'passes'        => $passes,
+		);
+	}
 }

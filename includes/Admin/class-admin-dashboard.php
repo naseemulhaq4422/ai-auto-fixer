@@ -209,7 +209,24 @@ class AdminDashboard {
 
 		$audit_results = $this->scanner->get_last_audit_results();
 		if ( null === $audit_results ) {
-			$audit_results = $this->scanner->run_audit( false );
+			$audit_results = array(
+				'seo_health_score' => 0,
+				'safety_score'     => 95,
+				'total_issues'     => 0,
+				'crawled_urls'     => 0,
+				'issues'           => array(),
+				'passes'           => array(),
+				'counts'           => array(
+					'critical'       => 0,
+					'warning'        => 0,
+					'info'           => 0,
+					'recommendation' => 0,
+					'passed'         => 0,
+				),
+				'scan_date'        => __( 'Ready for initial audit', 'ai-auto-fixer' ),
+				'safe_fixes'       => 0,
+				'status'           => 'ready',
+			);
 		}
 
 		$recommendations = $this->scanner->get_local_recommendations( (array) $audit_results );

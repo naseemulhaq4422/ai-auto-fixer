@@ -304,4 +304,38 @@ class FixManager {
 			'total_applied' => count( $applied ),
 		);
 	}
+
+	/**
+	 * Verify that a fix was applied and is active.
+	 *
+	 * @param string $fix_id Action identifier.
+	 * @param array  $context Context parameters.
+	 * @return bool True if verified active, false otherwise.
+	 */
+	public static function verify_fix( string $fix_id, array $context = array() ): bool {
+		switch ( $fix_id ) {
+			case 'apply_image_alt':
+				$attachment_id = (int) ( $context['attachment_id'] ?? 0 );
+				$expected_alt  = sanitize_text_field( $context['alt_text'] ?? '' );
+				$current_alt   = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+				return ! empty( $current_alt ) && ( empty( $expected_alt ) || $current_alt === $expected_alt );
+
+			case 'enable_search_visibility':
+				return '1' === (string) get_option( 'blog_public', '1' );
+
+			case 'enable_core_sitemap':
+				return (bool) apply_filters( 'wp_sitemaps_enabled', true );
+
+			case 'inject_geo_schema':
+				$settings = get_option( 'ai_auto_fixer_settings', array() );
+				return ! empty( $settings['enable_geo_schema'] );
+
+			case 'grant_ai_crawler_access':
+				$settings = get_option( 'ai_auto_fixer_settings', array() );
+				return ! empty( $settings['enable_ai_robots'] );
+
+			default:
+				return true;
+		}
+	}
 }

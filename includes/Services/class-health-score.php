@@ -121,6 +121,17 @@ class HealthScore {
 	}
 
 	/**
+	 * Direct alias for compute_deductions().
+	 *
+	 * @param int   $base_score Initial score.
+	 * @param array $issues List of issues.
+	 * @return int Deducted score.
+	 */
+	public static function deduct_score_from_issues( int $base_score, array $issues ): int {
+		return self::compute_deductions( $base_score, $issues );
+	}
+
+	/**
 	 * Convert numeric score to user-friendly qualitative rating.
 	 *
 	 * @param int $score Value between 0 and 100.

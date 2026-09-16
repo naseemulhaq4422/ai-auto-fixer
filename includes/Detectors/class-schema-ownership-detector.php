@@ -219,4 +219,22 @@ class SchemaOwnershipDetector {
 
 		return $missing;
 	}
+
+	/**
+	 * Detect ownership state across standard Schema.org entity types.
+	 *
+	 * @param string $html Rendered HTML string.
+	 * @return array<string, array{state: string, owners: string[], missing_properties: string[], recommendation: string}>
+	 */
+	public static function detect_ownership( string $html ): array {
+		$json_blocks = self::extract_json_ld_blocks( $html );
+		$targets     = array( 'Organization', 'WebSite', 'BreadcrumbList', 'Product', 'LocalBusiness' );
+		$results     = array();
+
+		foreach ( $targets as $target ) {
+			$results[ $target ] = self::evaluate_entity_ownership( $target, $json_blocks, $html );
+		}
+
+		return $results;
+	}
 }

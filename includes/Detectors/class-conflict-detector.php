@@ -99,4 +99,13 @@ class ConflictDetector {
 	public static function is_woocommerce_active(): bool {
 		return class_exists( 'WooCommerce' );
 	}
+
+	/**
+	 * Direct alias for get_ecosystem_status().
+	 *
+	 * @return array<string, array{name: string, active: bool, type: string, version: string|null}>
+	 */
+	public static function detect_conflicts(): array {
+		return self::get_ecosystem_status();
+	}
 }
