@@ -31,6 +31,7 @@
 			this.bindMediaTrash();
 			this.bindRollback();
 			this.bindModals();
+			this.bindSettingsForm();
 			this.checkInitialTab();
 		},
 
@@ -503,6 +504,84 @@
 		bindModals: function() {
 			$('.aaf-modal-close, .aaf-modal-cancel, .aaf-modal-overlay').on('click', function() {
 				$('.aaf-modal').fadeOut(200);
+			});
+		},
+
+		/**
+		 * Bind Settings form submission via AJAX with immediate visual feedback
+		 */
+		bindSettingsForm: function() {
+			const self = this;
+
+			// Handle real-time toggle visual state changes
+			$(document).on('change', '.aaf-setting-checkbox', function() {
+				const $row = $(this).closest('.aaf-setting-row');
+				const $pill = $row.find('.aaf-status-pill');
+				const isChecked = $(this).is(':checked');
+
+				if (isChecked) {
+					$row.addClass('aaf-setting-active');
+					$pill.removeClass('aaf-pill-inactive').addClass('aaf-pill-active').text('Active');
+				} else {
+					$row.removeClass('aaf-setting-active');
+					$pill.removeClass('aaf-pill-active').addClass('aaf-pill-inactive').text('Disabled');
+				}
+			});
+
+			// Handle form submission via REST API
+			$(document).on('submit', '#aaf-settings-form', function(e) {
+				e.preventDefault();
+
+				const $btn = $('#aaf-save-settings-btn');
+				const $btnLabel = $btn.find('.aaf-btn-label');
+				const $btnIcon = $btn.find('.aaf-btn-icon');
+				const $alert = $('#aaf-settings-ajax-alert');
+				const $msg = $('#aaf-settings-ajax-msg');
+
+				const payload = {
+					enable_ai_robots: $('input[name="enable_ai_robots"]').is(':checked') ? 1 : 0,
+					enable_geo_schema: $('input[name="enable_geo_schema"]').is(':checked') ? 1 : 0,
+					enable_opengraph: $('input[name="enable_opengraph"]').is(':checked') ? 1 : 0
+				};
+
+				$btn.prop('disabled', true).addClass('aaf-btn-loading');
+				$btnIcon.removeClass('dashicons-saved').addClass('dashicons-update aaf-spin-icon');
+				$btnLabel.text('Saving Preferences...');
+
+				$.ajax({
+					url: self.config.restUrl + '/settings',
+					method: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(payload),
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader('X-WP-Nonce', self.config.nonce);
+					},
+					success: function(response) {
+						$btn.prop('disabled', false).removeClass('aaf-btn-loading').addClass('aaf-btn-saved-state');
+						$btnIcon.removeClass('dashicons-update aaf-spin-icon').addClass('dashicons-yes-alt');
+						$btnLabel.text('Preferences Saved!');
+
+						$alert.slideDown(250);
+						$msg.text((response && response.message) ? response.message : 'Optimization preferences have been saved and applied in real-time.');
+
+						setTimeout(function() {
+							$btn.removeClass('aaf-btn-saved-state');
+							$btnIcon.removeClass('dashicons-yes-alt').addClass('dashicons-saved');
+							$btnLabel.text('Save Optimization Preferences');
+						}, 3000);
+
+						setTimeout(function() {
+							$alert.slideUp(400);
+						}, 6000);
+					},
+					error: function(xhr) {
+						$btn.prop('disabled', false).removeClass('aaf-btn-loading');
+						$btnIcon.removeClass('dashicons-update aaf-spin-icon').addClass('dashicons-saved');
+						$btnLabel.text('Save Optimization Preferences');
+
+						alert('Failed to save settings. Server error: ' + (xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : xhr.statusText));
+					}
+				});
 			});
 		},
 

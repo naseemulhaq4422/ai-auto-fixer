@@ -286,10 +286,12 @@
 /* Tabs Navigation */
 .aaf-tabs-nav {
 	display: flex;
-	gap: 8px;
-	border-bottom: 1px solid var(--aaf-border);
+	gap: 6px;
+	border-bottom: 2px solid var(--aaf-border);
 	margin-bottom: 24px;
 	overflow-x: auto;
+	padding-bottom: 0;
+	scrollbar-width: thin;
 }
 .aaf-tab-link {
 	display: inline-flex;
@@ -297,25 +299,31 @@
 	gap: 8px;
 	padding: 12px 18px;
 	color: var(--aaf-text-muted);
-	font-size: 14px;
+	font-size: 13.5px;
 	font-weight: 600;
 	text-decoration: none;
-	border-bottom: 2px solid transparent;
-	transition: all 0.2s ease;
+	border-radius: var(--aaf-radius-md) var(--aaf-radius-md) 0 0;
+	border-bottom: 3px solid transparent;
+	margin-bottom: -2px;
+	transition: all 0.15s ease-in-out;
+	white-space: nowrap;
 }
 .aaf-tab-link:hover {
 	color: var(--aaf-primary);
+	background: #f8fafc;
 }
 .aaf-tab-link.active {
 	color: var(--aaf-primary);
 	border-bottom-color: var(--aaf-primary);
+	background: #f5f3ff;
 }
 .aaf-tab-count {
 	font-size: 11px;
-	background: #f1f5f9;
-	color: var(--aaf-text-muted);
-	padding: 2px 7px;
+	background: #e0e7ff;
+	color: #4338ca;
+	padding: 2px 8px;
 	border-radius: 999px;
+	font-weight: 700;
 }
 .aaf-tab-content {
 	display: none;
@@ -882,5 +890,361 @@
 }
 [data-mode="audit"] #aaf-fix-all-btn {
 	opacity: 0.7;
+}
+
+/* ==========================================================================
+   Modern Settings, Toggle Switches & Coexistence Matrix Styles
+   ========================================================================== */
+
+@keyframes aafFadeIn {
+	from { opacity: 0; transform: translateY(-6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+.aaf-alert-banner {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 14px 18px;
+	border-radius: var(--aaf-radius-md);
+	margin-bottom: 20px;
+	box-shadow: var(--aaf-shadow-sm);
+	animation: aafFadeIn 0.3s ease-out;
+}
+.aaf-alert-success {
+	background: #f0fdf4;
+	border: 1.5px solid #86efac;
+	color: #166534;
+}
+.aaf-alert-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: #dcfce7;
+	color: #15803d;
+	flex-shrink: 0;
+}
+.aaf-alert-content {
+	display: flex;
+	flex-direction: column;
+	font-size: 13px;
+	line-height: 1.4;
+}
+.aaf-alert-content strong {
+	font-size: 14px;
+	font-weight: 700;
+	margin-bottom: 2px;
+}
+
+.aaf-section-header {
+	margin-bottom: 20px;
+}
+.aaf-section-title-group {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 6px;
+	flex-wrap: wrap;
+}
+.aaf-section-header h2 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--aaf-text-main);
+}
+.aaf-section-desc {
+	margin: 0;
+	font-size: 13.5px;
+	color: var(--aaf-text-muted);
+}
+.aaf-pill-badge {
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	padding: 3px 9px;
+	border-radius: 999px;
+}
+.aaf-pill-accent {
+	background: #ede9fe;
+	color: #6d28d9;
+	border: 1px solid #ddd6fe;
+}
+
+/* Settings Card */
+.aaf-settings-card {
+	background: #ffffff;
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-lg);
+	box-shadow: var(--aaf-shadow-sm);
+	overflow: hidden;
+}
+.aaf-card-header-icon {
+	width: 42px;
+	height: 42px;
+	border-radius: var(--aaf-radius-md);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	color: #ffffff;
+}
+.aaf-icon-gradient-purple {
+	background: linear-gradient(135deg, #6366f1, #8b5cf6);
+	box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+}
+.aaf-icon-gradient-blue {
+	background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+	box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+}
+.aaf-card-subtitle {
+	margin: 4px 0 0 0;
+	font-size: 13px;
+	color: var(--aaf-text-muted);
+}
+
+/* Settings List & Row */
+.aaf-settings-list {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+.aaf-setting-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 18px;
+	padding: 18px 20px;
+	background: #f8fafc;
+	border: 1.5px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+	transition: all 0.2s ease-in-out;
+}
+.aaf-setting-row:hover {
+	background: #ffffff;
+	border-color: #cbd5e1;
+	box-shadow: var(--aaf-shadow-sm);
+}
+.aaf-setting-row.aaf-setting-active {
+	background: #faf5ff;
+	border-color: #c084fc;
+	box-shadow: 0 2px 8px rgba(168, 85, 247, 0.08);
+}
+.aaf-setting-icon-box {
+	width: 44px;
+	height: 44px;
+	border-radius: var(--aaf-radius-md);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	background: #ffffff;
+	border: 1px solid var(--aaf-border);
+	box-shadow: var(--aaf-shadow-sm);
+}
+.aaf-icon-purple {
+	color: #7c3aed;
+	background: #f5f3ff;
+	border-color: #ddd6fe;
+}
+.aaf-icon-emerald {
+	color: #059669;
+	background: #ecfdf5;
+	border-color: #a7f3d0;
+}
+.aaf-icon-blue {
+	color: #2563eb;
+	background: #eff6ff;
+	border-color: #bfdbfe;
+}
+.aaf-setting-content {
+	flex: 1;
+}
+.aaf-setting-headline {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-bottom: 6px;
+}
+.aaf-setting-title {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--aaf-text-main);
+}
+.aaf-tag {
+	font-size: 11px;
+	font-weight: 600;
+	padding: 2px 8px;
+	border-radius: 999px;
+}
+.aaf-tag-purple {
+	background: #f3e8ff;
+	color: #7e22ce;
+	border: 1px solid #e9d5ff;
+}
+.aaf-tag-emerald {
+	background: #d1fae5;
+	color: #065f46;
+	border: 1px solid #a7f3d0;
+}
+.aaf-tag-blue {
+	background: #dbeafe;
+	color: #1e40af;
+	border: 1px solid #bfdbfe;
+}
+.aaf-status-pill {
+	font-size: 11px;
+	font-weight: 700;
+	padding: 2px 8px;
+	border-radius: 6px;
+	margin-left: auto;
+}
+.aaf-pill-active {
+	background: #dcfce7;
+	color: #15803d;
+	border: 1px solid #86efac;
+}
+.aaf-pill-inactive {
+	background: #e2e8f0;
+	color: #64748b;
+	border: 1px solid #cbd5e1;
+}
+.aaf-setting-description {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--aaf-text-muted);
+}
+.aaf-setting-action {
+	padding-top: 4px;
+	flex-shrink: 0;
+}
+
+/* Modern iOS / Tailwind Toggle Switch */
+.aaf-toggle-switch {
+	position: relative;
+	display: inline-block;
+	width: 48px;
+	height: 26px;
+	cursor: pointer;
+}
+.aaf-toggle-switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+	position: absolute;
+}
+.aaf-toggle-slider {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #cbd5e1;
+	transition: all 0.25s ease-in-out;
+	border-radius: 999px;
+	box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+.aaf-toggle-slider:before {
+	position: absolute;
+	content: "";
+	height: 20px;
+	width: 20px;
+	left: 3px;
+	bottom: 3px;
+	background-color: #ffffff;
+	transition: all 0.25s ease-in-out;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+.aaf-toggle-switch input:checked + .aaf-toggle-slider {
+	background: linear-gradient(135deg, #6366f1, #8b5cf6);
+	box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
+}
+.aaf-toggle-switch input:checked + .aaf-toggle-slider:before {
+	transform: translateX(22px);
+}
+.aaf-toggle-switch input:focus + .aaf-toggle-slider {
+	box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Settings Footer & Button */
+.aaf-settings-footer {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid var(--aaf-border-subtle);
+	flex-wrap: wrap;
+}
+.aaf-btn-lg {
+	padding: 11px 22px;
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: var(--aaf-radius-md);
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	border: none;
+	transition: all 0.2s ease-in-out;
+}
+.aaf-btn-saved-state {
+	background: #10b981 !important;
+	color: #ffffff !important;
+}
+.aaf-settings-save-hint {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: var(--aaf-text-muted);
+}
+
+/* Compatibility Grid Styling */
+.aaf-compat-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 16px;
+}
+.aaf-compat-item {
+	background: #f8fafc;
+	border: 1px solid var(--aaf-border);
+	border-radius: var(--aaf-radius-md);
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.aaf-compat-label {
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--aaf-text-muted);
+}
+.aaf-compat-val {
+	display: flex;
+	align-items: center;
+}
+.aaf-compat-desc {
+	margin: 0;
+	font-size: 12px;
+	color: var(--aaf-text-muted);
+	line-height: 1.4;
+}
+.aaf-badge-builder {
+	background: #f1f5f9;
+	color: #334155;
+	border: 1px solid #cbd5e1;
+}
+.aaf-badge-neutral {
+	background: #f1f5f9;
+	color: #64748b;
 }
 

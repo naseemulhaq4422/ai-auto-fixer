@@ -229,6 +229,21 @@ class AdminDashboard {
 			);
 		}
 
+		// Handle settings post save
+		$settings_saved = false;
+		if ( isset( $_POST['ai_auto_fixer_save_settings'] ) ) {
+			check_admin_referer( 'ai_auto_fixer_settings_action', 'ai_auto_fixer_settings_nonce' );
+
+			$current_settings = get_option( 'ai_auto_fixer_settings', array() );
+			$current_settings['enable_ai_robots']  = ! empty( $_POST['enable_ai_robots'] );
+			$current_settings['enable_geo_schema'] = ! empty( $_POST['enable_geo_schema'] );
+			$current_settings['enable_opengraph']  = ! empty( $_POST['enable_opengraph'] );
+
+			update_option( 'ai_auto_fixer_settings', $current_settings, 'no' );
+			$settings_saved = true;
+			$active_tab     = 'settings';
+		}
+
 		$recommendations = $this->scanner->get_local_recommendations( (array) $audit_results );
 		$fix_history     = RollbackManager::get_snapshots( 50 );
 		$audit_status    = $this->scanner->get_audit_status();
@@ -238,7 +253,9 @@ class AdminDashboard {
 		$detected_seo_plugins = SeoPluginDetector::detect();
 		$detected_conflicts   = ConflictDetector::detect_conflicts();
 
-		$current_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : $active_tab;
+		$current_tab = isset( $_POST['ai_auto_fixer_save_settings'] )
+			? 'settings'
+			: ( isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : $active_tab );
 
 		include AI_AUTO_FIXER_PATH . 'views/admin-dashboard-page.php';
 	}

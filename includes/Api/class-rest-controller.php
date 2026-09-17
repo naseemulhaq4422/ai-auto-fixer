@@ -339,6 +339,24 @@ class RestController extends WP_REST_Controller {
 				'permission_callback' => array( $this, 'permissions_check' ),
 			)
 		);
+
+		// 19. GET & POST /settings - Manage persistent site optimizations
+		register_rest_route(
+			$this->namespace,
+			'/settings',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'handle_get_settings' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'handle_save_settings' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -919,5 +937,52 @@ class RestController extends WP_REST_Controller {
 				'recommendations' => $recommendations,
 			)
 		);
+	}
+
+	/**
+	 * Retrieve current plugin settings.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response
+	 */
+	public function handle_get_settings( WP_REST_Request $request ): WP_REST_Response {
+		$settings = get_option( 'ai_auto_fixer_settings', array() );
+		return new WP_REST_Response( array(
+			'success'  => true,
+			'settings' => $settings,
+		), 200 );
+	}
+
+	/**
+	 * Save updated plugin optimization settings.
+	 *
+	 * @param WP_REST_Request $request Request.
+	 * @return WP_REST_Response
+	 */
+	public function handle_save_settings( WP_REST_Request $request ): WP_REST_Response {
+		$params = $request->get_json_params();
+		if ( empty( $params ) ) {
+			$params = $request->get_params();
+		}
+
+		$settings = get_option( 'ai_auto_fixer_settings', array() );
+
+		if ( isset( $params['enable_ai_robots'] ) ) {
+			$settings['enable_ai_robots'] = ! empty( $params['enable_ai_robots'] );
+		}
+		if ( isset( $params['enable_geo_schema'] ) ) {
+			$settings['enable_geo_schema'] = ! empty( $params['enable_geo_schema'] );
+		}
+		if ( isset( $params['enable_opengraph'] ) ) {
+			$settings['enable_opengraph'] = ! empty( $params['enable_opengraph'] );
+		}
+
+		update_option( 'ai_auto_fixer_settings', $settings, 'no' );
+
+		return new WP_REST_Response( array(
+			'success'  => true,
+			'message'  => __( 'Optimization preferences saved successfully!', 'ai-auto-fixer' ),
+			'settings' => $settings,
+		), 200 );
 	}
 }
